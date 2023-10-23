@@ -14,7 +14,10 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-        },
+            backgroundImage: {
+                'bodyImg': "url('/public/storage/pool_table_green.png')",
+            }
+        }
     },
 
     plugins: [forms],
