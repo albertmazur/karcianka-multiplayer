@@ -15,7 +15,7 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             backgroundImage: {
-                'bodyImg': "url('/public/storage/pool_table_green.png')",
+                'bodyImg': "url('/storage/images/background/pool_table_green.png')",
             }
         }
     },
