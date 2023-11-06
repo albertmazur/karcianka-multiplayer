@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\FriendController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
+
+    Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
 });
 
 Route::middleware('auth')->group(function () {
