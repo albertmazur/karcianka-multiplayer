@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
 
     Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
+    Route::put('friend', [FriendController::class, 'add'])->name('friend.add');
 });
 
 Route::middleware('auth')->group(function () {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\Client\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +14,12 @@ class FriendController extends Controller
         return view("friend.index", ["friends" => $friends]);
     }
 
-    public function add(){
+    public function add(Request $request){
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
 
-        return back();
+        $user = User::where("name", "=", $validated['name'])->get();
+        return back()->with();
     }
 }
