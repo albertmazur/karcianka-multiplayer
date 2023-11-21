@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'Te poświadczenia nie pasują do naszych danych.',
+    'failed' => 'Te dane uwierzytelniające nie są zgodne z naszymi danymi.',
     'password' => 'Podane hasło jest nieprawidłowe.',
     'throttle' => 'Zbyt wiele prób logowania. Proszę spróbować ponownie za :seconds sekund.',
 

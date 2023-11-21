@@ -1,0 +1,4 @@
+<?php
+return[
+    "game" => "Gra"
+];

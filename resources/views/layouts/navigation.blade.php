@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('game.start')" :active="request()->routeIs('game.start')">
-                        {{ __('Game') }}
+                        {{ __('game.game') }}
                     </x-nav-link>
                     <x-nav-link :href="route('friend.index')" :active="request()->routeIs('friend.index')">
                         {{ __('Friend') }}
@@ -74,7 +74,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('game') }}
+                {{ __('game.game') }}
             </x-responsive-nav-link>
         </div>
 

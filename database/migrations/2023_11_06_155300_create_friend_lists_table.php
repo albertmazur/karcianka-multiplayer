@@ -15,6 +15,8 @@ return new class extends Migration
         Schema::create('friend_lists', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
+            $table->foreignId('user_friend_id');
+            $table->boolean('accepted')->nullable();
             //$table->timestamps();
         });
     }

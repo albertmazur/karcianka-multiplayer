@@ -28,6 +28,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
     Route::put('friend', [FriendController::class, 'add'])->name('friend.add');
+    Route::delete('friend', [FriendController::class, 'remove'])->name('friend.remove');
+
+    Route::post('friend/accepted', [FriendController::class, 'accepted'])->name('friend.accepted');
+    Route::delete('friend/not-accepted', [FriendController::class, 'notAccepted'])->name('friend.not-accepted');
 });
 
 Route::middleware('auth')->group(function () {

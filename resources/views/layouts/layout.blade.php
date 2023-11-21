@@ -32,7 +32,7 @@
 
         <main class="py-4">
             <div class="container">
-                {{-- @include("layouts.shaderd.messages") --}}
+                @include("layouts.shaderd.messages")
                 @yield('content')
             </div>
         </main>
