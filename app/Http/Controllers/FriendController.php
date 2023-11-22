@@ -23,7 +23,7 @@ class FriendController extends Controller
         ]);
     }
 
-    public function add(Request $request){
+    public function sendInvitation(Request $request){
         $validated = $request->validate([
             'name' => 'required',
         ]);
@@ -35,8 +35,12 @@ class FriendController extends Controller
                     $info = ["error" =>  "Nie możesz podać samego siebie" ];
                 }
                 else{
-                    $this->friendRepository->sendInvitation(Auth::id(), $user->id);
-                    $info = ["succes" =>  "Wysłano zaproszenie" ];
+                    if($this->friendRepository->sendInvitation(Auth::id(), $user->id)){
+                        $info = ["success" =>  "Wysłano zaproszenie" ];
+                    }
+                    else{
+                        $info = ["error" =>  "Jesteście znajomimi lub zaproszenie było już wysłane" ];
+                    }
                 }
             }
             else{
@@ -48,18 +52,18 @@ class FriendController extends Controller
     public function remove(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
         $this->friendRepository->remove($date["id"]);
-        return back()->with(["succes" => "Udało się usunać"]);
+        return back()->with(["success" => "Udało się usunać"]);
     }
 
     public function accepted(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
         $this->friendRepository->acceptedInvitation($date["id"]);
-        return back()->with(["succes" => "Dodano do znajomych"]);
+        return back()->with(["success" => "Dodano do znajomych"]);
     }
 
     public function notAccepted(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
         $this->friendRepository->notAcceptedInvitation($date["id"]);
-        return back()->with(["succes" => "Udało się usuanąć zaproszenie"]);
+        return back()->with(["success" => "Udało się usuanąć zaproszenie"]);
     }
 }

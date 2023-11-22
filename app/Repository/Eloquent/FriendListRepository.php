@@ -14,13 +14,20 @@ class FriendListRepository implements Repository{
         $this->friendListModel = $friendList;
     }
 
-    public function sendInvitation(int $idAuth, int $user): void{
-        $newFriend = new FriendList();
+    public function sendInvitation(int $idAuth, int $user): bool{
+        $invitation1 = $this->friendListModel->where('user_id', '=', $idAuth)->where('user_friend_id', '=', $user)->first();
+        $invitation2 = $this->friendListModel->where('user_id', '=', $user)->where('user_friend_id', '=', $idAuth)->first();
 
-        $newFriend->user_id = $user;
-        $newFriend->user_friend_id = $idAuth;
-        $newFriend->accepted = false;
-        $newFriend->save();
+        if($invitation1 == null && $invitation2 == null){
+            $newFriend = new FriendList();
+
+            $newFriend->user_id = $user;
+            $newFriend->user_friend_id = $idAuth;
+            $newFriend->accepted = false;
+            $newFriend->save();
+            return true;
+        }
+        return false;
     }
 
     public function acceptedInvitation(int $idMyFriend): void{

@@ -11,4 +11,9 @@ class GameController extends Controller
     {
         return view('game.index');
     }
+
+    public function single(): View
+    {
+        return view('game.single');
+    }
 }

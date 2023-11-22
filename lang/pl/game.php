@@ -1,4 +1,5 @@
 <?php
 return[
-    "game" => "Gra"
+    "game" => "Gra",
+    "single" => "Gra samemu"
 ];

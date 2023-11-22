@@ -25,9 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
+    Route::get('/game/single', [GameController::class, 'single'])->name('game.single');
 
     Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
-    Route::put('friend', [FriendController::class, 'add'])->name('friend.add');
+    Route::put('friend', [FriendController::class, 'sendInvitation'])->name('friend.add');
     Route::delete('friend', [FriendController::class, 'remove'])->name('friend.remove');
 
     Route::post('friend/accepted', [FriendController::class, 'accepted'])->name('friend.accepted');
