@@ -45,17 +45,16 @@
     .board .center{
         display: flex;
         justify-content: center;
-        flex: 2;
         flex-direction: row;
+        width: 100%;
     }
 
     .centerBoard{
         background-image: url('http://localhost:8000/storage/background/pool_table_red.png');
         align-self: center;
         box-sizing: border-box;
-        padding: 10px 10px 0px 10px;
+        padding:10px 40px;
         border-radius: 20px;
-        flex: 2;
         min-height: 280px;
     }
 
@@ -151,7 +150,7 @@
         z-index: 1;
     }
 
-    .buttons input{
+    .buttons .start{
         width: 200px;
         height: 40px;
         padding: 6px;
@@ -165,7 +164,7 @@
         cursor: pointer;
     }
 
-    .buttons input:hover{
+    .buttons .start:hover{
         background-color: rgb(216, 216, 216);
         transform: scale(1.01);
         transition: 0.2s ease-in-out;
