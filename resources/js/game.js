@@ -92,7 +92,7 @@ function start(){
         for(let i=0; i<karty.length;i++){
             let img = document.createElement("img");
             img.setAttribute("alt", karty[i]);
-            img.setAttribute("src", 'storage/cards/'+karty[i]+'.png');
+            img.setAttribute("src", '/storage/cards/'+karty[i]+'.png');
             kartyImg.push(img);
         }
     }
@@ -115,15 +115,15 @@ function start(){
 
         if(i%4==0) youCards.appendChild(img);
         if(i%4==1){
-            img.setAttribute("src", 'storage/cards/background_card_reverse.png');
+            img.setAttribute("src", '/storage/cards/background_card_reverse.png');
             bot1Cards.appendChild(img);
         }
         if(i%4==2){
-            img.setAttribute("src", 'storage/cards/background_card.png');
+            img.setAttribute("src", '/storage/cards/background_card.png');
             bot2Cards.appendChild(img);
         }
         if(i%4==3){
-            img.setAttribute("src", 'storage/cards/background_card_reverse.png');
+            img.setAttribute("src", '/storage/cards/background_card_reverse.png');
             bot3Cards.appendChild(img);
         }
     }
@@ -135,10 +135,12 @@ function start(){
     let znak = odkryte[0].substring(0,2);
     if(znak=="02" || znak=="03" || znak=="0J" || znak=="0Q" || znak=="0K" || znak=="0A") start();
 
-    kartaNaWidoku.setAttribute("src", "storage/cards/"+odkryte[0]+".png");
+    kartaNaWidoku.setAttribute("src", "/storage/cards/"+odkryte[0]+".png");
     kartaNaWidoku.setAttribute("alt", odkryte[0]);
 
-    for(card of youCards.children) card.addEventListener("click", wybranieKarty);
+    for(card of youCards.children){
+        card.addEventListener("click", wybranieKarty);
+    }
 }
 
 //-------------Dodowanie karty dal grasza po kliknięciu zakryte--------------------
@@ -159,7 +161,7 @@ function dobierzKarteZZakrytych(){
 //----------------Stwozrenie kart-----------------------------
 function stworzKarte(card){
     let img = document.createElement("img");
-    if (ktoTerazGra.innerText==ty) img.setAttribute("src", 'storage/cards/'+card+'.png');
+    if (ktoTerazGra.innerText==ty) img.setAttribute("src", '/storage/cards/'+card+'.png');
     else img.setAttribute("src", '/storage/cards/background_card.png');
     img.setAttribute("alt", card);
     return img;
@@ -176,12 +178,12 @@ function dobierzKarte(kto){
         youCards.appendChild(img);
     }
     if(kto==gracz1){
-        img.setAttribute("src", 'storage/cards/background_card_reverse.png');
+        img.setAttribute("src", '/storage/cards/background_card_reverse.png');
         bot1Cards.appendChild(img);
     }
     if(kto==gracz2)  bot2Cards.appendChild(img);
     if(kto==gracz3){
-        img.setAttribute("src", 'storage/cards/background_card_reverse.png');
+        img.setAttribute("src", '/storage/cards/background_card_reverse.png');
         bot3Cards.appendChild(img);
     }
 
@@ -234,7 +236,7 @@ function wybranieKarty(){
     if(ktoTerazGra.innerText==ty && sprawdzeniaKarty(wybranaKarta)){
         odkryte.push(wybranaKarta);
 
-        kartaNaWidoku.setAttribute("src", "storage/cards/"+wybranaKarta+".png");
+        kartaNaWidoku.setAttribute("src", "/storage/cards/"+wybranaKarta+".png");
         kartaNaWidoku.setAttribute("alt", wybranaKarta);
 
         this.classList.remove("addCard");

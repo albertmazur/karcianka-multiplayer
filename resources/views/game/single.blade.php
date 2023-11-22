@@ -41,7 +41,7 @@
             <li><span>Karty nie funkcyjne</span> - 4, 5, 6, 7, 8, 9, 10.</li>
         </ul>
     </div>
-    <footer>
+    <div class="stopka">
         <p>Autor grafiki kart: <a target="_blank" href="http://www.freepik.com">Designed by macrovector / Freepik</a></p>
     </footer>
     @vite([ 'resources/js/game.js',])

@@ -1,4 +1,5 @@
 .game{
+    margin: 0;
     text-align: center;
     display: inline-flex;
     flex-direction: column;
@@ -6,6 +7,9 @@
 
     div{
         margin: 5px;
+    }
+    img{
+        display: inline;
     }
 
     #cardsBot2 img{
@@ -17,7 +21,7 @@
 
     .board{
         /*Background pattern from sublepatterns.com*/
-        background-image: url("img/background/pool_table_green.png");
+        background-image: url("http://localhost:8000/storage/background/pool_table_green.png");
         margin: 10px;
         padding: 0;
         border-radius: 100px;
@@ -26,27 +30,27 @@
         flex-direction: column;
         justify-content: center;
         align-items: stretch;
+    }
 
-        p{
-            color: white;
-            letter-spacing: 1px;
-            margin: 10px;
-        }
-
-        .center{
-            display: flex;
-            justify-content: center;
-            flex: 2;
-            flex-direction: row;
-        }
+    .board p{
+        color: white;
+        letter-spacing: 1px;
+        margin: 10px;
     }
 
     #ktoTeraz{
         font-size: 26px;
     }
 
+    .board .center{
+        display: flex;
+        justify-content: center;
+        flex: 2;
+        flex-direction: row;
+    }
+
     .centerBoard{
-        background-image: url("../background/pool_table_red.png");
+        background-image: url('http://localhost:8000/storage/background/pool_table_red.png');
         align-self: center;
         box-sizing: border-box;
         padding: 10px 10px 0px 10px;
@@ -167,12 +171,12 @@
         transition: 0.2s ease-in-out;
     }
 
-    footer a{
+    .stopka a{
         color: red;
         text-decoration: none;
     }
 
-    footer a:hover{
+    .stopka a:hover{
         color: brown;
     }
 
