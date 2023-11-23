@@ -128,11 +128,17 @@ function start(){
     uncoverMainCards.push(coverMainCards[0])
     coverMainCards.splice(0,1)
 
-    let znak = uncoverMainCards[0].substring(0,2)
-    if(znak=="02" || znak=="03" || znak=="0J" || znak=="0Q" || znak=="0K" || znak=="0A") start()
+    let sing = uncoverMainCards[0].substring(0,2)
+    if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
 
     coverMainCard.setAttribute("src", "/storage/cards/"+uncoverMainCards[0]+".png")
     coverMainCard.setAttribute("alt", uncoverMainCards[0])
+
+    let history = document.getElementById("history")
+    while (history.firstChild) {
+        history.removeChild(history.firstChild);
+    }
+    history.appendChild(coverMainCard.cloneNode(true))
 
     for(let card of youCards.children){
         card.addEventListener("click", selectingCard)
@@ -199,7 +205,7 @@ function checkCoverCards(){
     }
     if(coverMainCards.length==0 && uncoverMainCards.length==1){
         let whoWin = document.createElement("p")
-        whoWin.id="ktoWygral"
+        whoWin.id="whoWin"
         if(youCards.length > bot1Cards.length) whoWin.innerText="Koniec gry wygrał bot"
         if(youCards.length < bot1Cards.length) whoWin.innerText="Koniec gry wygrałeś ty"
         document.querySelector(".centerBoard").insertBefore(whoWin, document.querySelector(".centerBoard p"))
@@ -268,18 +274,9 @@ function ruchBota(cards){
 
 
     if(playedCard != null){
-        //console.log("Karta bota"+zagranaKarta.innerHTML)
         checkCard(playedCard.getAttribute("alt"))
         isCard=true
     }
-    // for(let card of cards){
-    //     if(sprawdzeniaKarty(card.getAttribute("alt"))){
-    //         jestKarta = true
-    //         zagranaKarta = card
-    //         break
-    //     }
-    // }
-    //console.log("Porzednia karta:" + kartaNaWidoku.innerHTML)
 
     changeCard(isCard, playedCard)
 }
@@ -324,7 +321,10 @@ function heurystyczne(cards){
     }
 
     let coverCardSign = coverMainCard.getAttribute("alt").substring(0,2)
-    if(cardsNotSpecial.length>0 && (suma==0 && !(coverCardSign=="02" || coverCardSign=="03" || coverCardSign=="0K"))){
+    console.log("Znka cover karty: " + coverCardSign)
+    if (cardsNotSpecial.length > 0 &&
+        ((suma == 0 && !helpConditionHeurystyczne(coverCardSign)) ||
+         (suma != 0 &&  helpConditionHeurystyczne(coverCardSign)))) {
         //console.log("nie bitewne: " + cardsNotSpecial)
         return cardsNotSpecial.pop()
     }
@@ -334,6 +334,10 @@ function heurystyczne(cards){
         return cardsSpecial.pop()
     }
     return null
+}
+
+function helpConditionHeurystyczne(sing){
+    return (sing == "02" || sing == "03" || sing == "0J" || sing == "0K" || sing == "0A")
 }
 
 //-------------------Checks if this card can be played----------------
@@ -409,36 +413,8 @@ function changeCard(isCard, selectedCard){
     }
 }
 
-//------------------------setSizeCards-----------------------------
-// function setSizeCards(kto){
-//     let widthMore
-//     let widthLess
-//     if(window.innerWidth<=700){
-//         widthMore = "25px"
-//         widthLess = "50px"
-//     }
-//     if(window.innerWidth>700 && window.innerWidth<=1500){
-//         widthMore = "50px"
-//         widthLess = "75px"
-//     }
-
-//     let cards = []
-//     if(who==bot1) cards = bot1Cards.children
-
-//     let w = "";
-//     if(cards.length>5) w = widthMore
-//     else w = widthLess
-
-//     for(let card of cards){
-//         if(kto==bot1) card.style.width=w
-//         else card.style.height=w
-//     }
-
-// }
-
 //--------------Checking if someone won------------
 function checkWin(who){
-    //setSizeCards(kto);
 
     let cards
     switch(who){
@@ -461,7 +437,7 @@ function win(who){
     if(who==human) text = "Wygrałeś"
     else text = "Wygrał " + who
     let whoWinParagraph = document.createElement("p")
-    whoWinParagraph.id="ktoWygral"
+    whoWinParagraph.id="whoWin"
     whoWinParagraph.innerText=text
     document.querySelector(".centerBoard").insertBefore(whoWinParagraph, document.querySelector(".centerBoard p"))
     resetGames()
@@ -488,7 +464,5 @@ function addForHistory(card){
     let historyGame = document.getElementById("history")
     card.style = ""
     card.classList.remove("removeCard")
-    card.classList.add("m-2", "sm:m-4", "my-2")
-    if(historyGame.children.length == 0) historyGame.appendChild(card)
-    else historyGame.insertBefore(card, historyGame.firstChild)
+    historyGame.insertBefore(card, historyGame.firstChild)
 }
