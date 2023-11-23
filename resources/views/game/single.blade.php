@@ -2,7 +2,7 @@
 <div class="game">
     <div class="board" style="background-image: url( {{asset("storage/background/pool_table_green.png")}} )">
         <div class="bot player2">
-            <p>Gracz 2</p>
+            <p>Gracz 1</p>
             <div id="cardsBot2" ></div>
         </div>
         <div class="center">
@@ -18,20 +18,20 @@
                 <div class="cardsYou"></div>
             </div>
     </div>
-    <div class="buttons">
-        <p class="text-gray-50" >Tryby gry</p>
-        <div class="flex justify-center">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg gap-3 m-6 p-6">
+        <p class="" >Tryby gry</p>
+        <div class="flex justify-center gap-3">
             <div class="flex items-center mb-4">
                 <input checked id="default-radio-1" type="radio" value="Heurystyczne" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                <label for="default-radio-1" class="ms-2 text-sm font-medium text-gray-50">Heurystyczne</label>
+                <x-input-label for="default-radio-1" class="ms-2">Heurystyczne</x-input-label>
             </div>
 
             <div class="flex items-center">
                 <input id="default-radio-2" type="radio" value="MCTS" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                <label for="default-radio-2" class="ms-2 text-sm font-medium text-gray-50">MCTS</label>
+                <x-input-label for="default-radio-2" class="ms-2">MCTS</x-input-label>
             </div>
         </div>
-        <input type="button" class="start" value="Start">
+        <x-primary-button id="start">Start</x-primary-button>
     </div>
     <div class="mt-4 p-4">
         <h1>Zasady gry</h1>
@@ -47,7 +47,7 @@
     </div>
     <div class="stopka">
         <p>Autor grafiki kart: <a target="_blank" href="http://www.freepik.com">Designed by macrovector / Freepik</a></p>
-    </footer>
+    </div>
     @vite([ 'resources/js/game.js',])
 </div>
 </x-app-layout>

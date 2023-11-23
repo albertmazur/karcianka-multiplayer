@@ -82,13 +82,14 @@ let ktoTerazGra = document.getElementById("ktoTeraz");
 
 //------------------Obsługa urchomienia i ponowienia gry----------------------------------------------
 let tryb
-let nowaGra = document.querySelector(".buttons input.start");
+let nowaGra = document.getElementById("start");
+let firstGame = true
 nowaGra.addEventListener("click", start);
 
 //-------------------------Start gry----------------------------
 function start(){
-    if(nowaGra.value=="Start"){
-        for(let i=0; i<karty.length;i++){
+    if(firstGame){
+        for(let i=0; i<karty.length; i++){
             let img = document.createElement("img");
             img.setAttribute("alt", karty[i]);
             img.setAttribute("src", '/storage/cards/'+karty[i]+'.png');
@@ -96,7 +97,8 @@ function start(){
         }
     }
 
-    nowaGra.setAttribute("value", "Od nowa");
+    nowaGra.textContent="Od nowa"
+    firstGame = false
 
     document.getElementById("zakryte").addEventListener("click", dobierzKarteZakrytych);
 
@@ -197,7 +199,6 @@ function sprawdzZakryte(){
         if(youCards.length < gracz2.length) ktoWygral.innerText="Koniec gry wygrałeś ty. Zagraj od nowa";
 
         document.querySelector(".centerBoard").insertBefore(ktoWygral, document.querySelector(".centerBoard p"));
-        //resetGry();
     }
 }
 
@@ -255,9 +256,10 @@ function ruchBota(cards){
     let zagranaKarta;
     let jestKarta=false;
     if(tryb == "Heurystyczne") zagranaKarta = heurystyczne(cards)
-    console.log("Karta bota"+zagranaKarta)
+
 
     if(zagranaKarta != null){
+        console.log("Karta bota"+zagranaKarta.innerHTML)
         sprawdzeniaKarty(zagranaKarta.getAttribute("alt"))
         jestKarta=true
     }
@@ -270,6 +272,7 @@ function ruchBota(cards){
     //     }
     // }
     console.log("Porzednia karta:" + kartaNaWidoku.innerHTML)
+    console.log(zagranaKarta)
     zmienKarte(jestKarta, zagranaKarta);
 }
 
@@ -292,7 +295,8 @@ function heurystyczne(cards){
                wybranaKartaZnak == "0K" ||
                wybranaKartaZnak == "0J" ||
                wybranaKartaZnak == "0Q" ||
-               wybranaKartaZnak == "0A") {
+               wybranaKartaZnak == "0A")
+            {
                 pasujaceBitewne.push(card)
             }
             else{
@@ -376,7 +380,8 @@ function sprawdzeniaKarty(wybranaKarta){
 //---------------------------Ustawienie katy na stos która zosała zagrana--------------------
 function zmienKarte(jestKarta, zagranaKarta){
     if(jestKarta){
-        kartaNaWidoku.setAttribute("src", kartyImg[karty.indexOf(zagranaKarta.getAttribute('alt'))].getAttribute("src"));
+        console.log("czy to to:"+ kartyImg.length)
+        kartaNaWidoku.setAttribute("src", kartyImg.at(karty.indexOf(zagranaKarta.getAttribute('alt'))).getAttribute("src"));
         kartaNaWidoku.setAttribute("alt", zagranaKarta.getAttribute("alt"));
         odkryte.push(zagranaKarta.getAttribute("alt"));
 

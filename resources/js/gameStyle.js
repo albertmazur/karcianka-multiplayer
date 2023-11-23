@@ -1,4 +1,6 @@
 window.addEventListener("resize", function(){
+    let bot2Cards = document.querySelector("#cardsBot2");
+
     if(window.innerWidth<=700){
         if(bot2Cards.children.length>5){
             for(let card of bot2Cards.children.length){
@@ -15,6 +17,5 @@ window.addEventListener("resize", function(){
     }
     else{
         for(let card of bot2Cards.children) card.style.width = "";
-
     }
 });
