@@ -321,18 +321,16 @@ function heurystyczne(cards){
     }
 
     let coverCardSign = coverMainCard.getAttribute("alt").substring(0,2)
-    console.log("Znka cover karty: " + coverCardSign)
     if (cardsNotSpecial.length > 0 &&
         ((suma == 0 && !helpConditionHeurystyczne(coverCardSign)) ||
          (suma != 0 &&  helpConditionHeurystyczne(coverCardSign)))) {
-        //console.log("nie bitewne: " + cardsNotSpecial)
         return cardsNotSpecial.pop()
     }
 
     if(cardsSpecial.length>0){
-        //console.log("bitewne: "+ cardsSpecial)
         return cardsSpecial.pop()
     }
+
     return null
 }
 
