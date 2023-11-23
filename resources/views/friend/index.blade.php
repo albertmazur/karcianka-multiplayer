@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="w-full bg-white  overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="w-full bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <form action="{{route("friend.add")}}" method="post" class="flex flex-col gap-3 m-4">
                         @method('PUT')
                         @csrf

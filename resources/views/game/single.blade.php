@@ -3,34 +3,34 @@
     <div class="flex flex-col-reverse sm:flex-row sm:m-2">
         <div class="bg-white flex flex-col sm:items-stretch m-6 h-56 sm:h-[900px] sm:m-3 sm:w-48">
             <p class="my-5">{{__("game.history")}}</p>
-            <div id="history" class="overflow-auto flex flex-row sm:flex-col">
+            <div id="history" class="overflow-auto flex flex-row sm:flex-col gap-4 px-8">
             </div>
         </div>
 
-        <div class="board sm:w-full" style="background-image: url( {{asset("storage/background/pool_table_green.png")}} )">
-            <div class="bot player2">
-                <p>Gracz 1</p>
-                <div id="cardsBot2" ></div>
+        <div class="board sm:w-full">
+            <div class="bot bot1">
+                <p>Bot 1</p>
+                <div id="cardsBot1" ></div>
             </div>
             <div class="center">
                 <div class="centerBoard" style="background-image: url({{asset("storage/background/pool_table_red.png")}})">
                     <p>Suma kart: <span id="suma"></span></p>
-                    <img id="zakryte" src={{asset("storage/cards/background_card.png")}} alt="card">
-                    <img id="odkryte" src={{asset("storage/cards/background_card.png")}} alt="card">
-                    <p>Ruch grasza:</p><p id="ktoTeraz"></p>
+                    <img id="coverMainCards" src={{asset("storage/cards/background_card.png")}} alt="Cover cards">
+                    <img id="uncoverMainCards" src={{asset("storage/cards/background_card.png")}} alt="Uncover cards">
+                    <p>Ruch grasza:</p><p id="whoNow"></p>
                 </div>
             </div>
-                <div class="you">
-                    <p>Ty</p>
-                    <div class="cardsYou"></div>
+                <div class="human">
+                    <p>{{Auth::user()->name}}</p>
+                    <div class="cardsHuman"></div>
                 </div>
         </div>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg gap-3 m-6 p-6">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col items-center gap-3 m-6 p-6">
         <p class="" >Tryby gry</p>
         <div class="flex justify-center gap-3">
-            <div class="flex items-center mb-4">
+            <div class="flex items-center">
                 <input checked id="default-radio-1" type="radio" value="Heurystyczne" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
                 <x-input-label for="default-radio-1" class="ms-2">Heurystyczne</x-input-label>
             </div>
@@ -40,10 +40,10 @@
                 <x-input-label for="default-radio-2" class="ms-2">MCTS</x-input-label>
             </div>
         </div>
-        <x-primary-button id="start">Start</x-primary-button>
+        <x-primary-button id="start" class="w-28 justify-center">Start</x-primary-button>
     </div>
     <div class="mt-4 p-4">
-        <h1>Zasady gry</h1>
+        <h1 class="mb-5">Zasady gry</h1>
         <ul>
             <li><span>Wykładanie kart</span> – podczas rozgrywki wykładać można 1 kartę. Karty na środek dokłada się według zasady koloru i figury. Jeśli więc na stole leży 5 kier, gracz może położyć dowolną 5 lub dowolnego kiera. Wyjątkiem są karty funkcyjne, które wymuszają wyłożenie na stół konkretnych figur.</li>
             <li><span>Dobieranie kart</span> – kiedy gracz nie ma w dłoni karty, którą może wyłożyć na stół, dobiera jedną z kupki i traci kolejkę. Karty dobiera też, jeśli zbiera karę. Część z kart funkcyjnych określa, ile kart powinno się dobrać. Jeśli karta karna zostaje przebita kolejną, liczba kart w karze zwiększa się. Kara kumuluje się, póki któryś z graczy nie musi dobrać karty z kupki – wtedy ponosi karę, dobierając z talii skumulowaną w karze liczbę kart.</li>
@@ -57,6 +57,17 @@
     <div class="stopka">
         <p>Autor grafiki kart: <a target="_blank" href="http://www.freepik.com">Designed by macrovector / Freepik</a></p>
     </div>
+    <script>
+
+    </script>
+    <style>
+        .board{
+            background-image: url({{asset("storage/background/pool_table_green.png")}})
+        }
+        .centerBoard{
+            background-image: url({{asset("storage/background/pool_table_red.png")}})
+        }
+    </style>
     @vite([ 'resources/js/game.js',])
 </div>
 </x-app-layout>

@@ -9,11 +9,8 @@
         display: inline;
     }
 
-    #cardsBot2 img{
+    #cardsBot1 img{
         max-width: 85px;
-    }
-    #cardsBot1 img, #cardsBot3 img{
-        max-height: 85px;
     }
 
     .board{
@@ -34,7 +31,7 @@
         margin: 10px;
     }
 
-    #ktoTeraz{
+    #whoNow{
         font-size: 26px;
     }
 
@@ -54,51 +51,17 @@
         min-height: 280px;
     }
 
-    .player1 {
-        justify-content: end;
-    }
-
-    .player1 p{
-        writing-mode: tb;
-        order: 2;
-    }
-
-    #cardsBot1, #cardsBot3{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        max-height: 500px;
-        flex-wrap: wrap;
-    }
-
-    #cardsBot1{
-        align-content: flex-end;
-    }
-
-    #cardsBot3{
-        align-content: flex-start;
-    }
-    .player2{
+    .bot1{
         flex: 1;
         min-height: 190px;
     }
 
-    .player3, .player1{
-        display: flex;
-        flex: 1.5;
-    }
-
-    .player3 p{
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-    }
-
-    .cardsYou img, .zakryte{
+    .cardsHuman img, #uncoverMainCards{
         transition: 0.2s ease-in-out;
         cursor: pointer;
     }
 
-    .cardsYou img:hover, .zakryte:hover{
+    .cardsHuman img:hover, #uncoverMainCards:hover{
         transform: scale(1.2);
         transition: 0.2s ease-in-out;
     }
@@ -108,12 +71,12 @@
         text-transform: uppercase;
     }
 
-    .you{
+    .human{
         flex: 1;
         min-height: 220px;
     }
 
-    #ktoWygral{
+    #whoWin{
         color: darkgreen;
         font-size: 40px;
         font-weight: bolder;
@@ -187,25 +150,17 @@
 }
 
 @media screen and (max-width: 1500px) {
-    #cardsBot2 img{
+    #cardsBot1 img{
         max-width: 75px;
-    }
-
-    #cardsBot1 img, #cardsBot3 img{
-        max-height: 75px;
     }
 }
 
 @media screen and (max-width: 700px) {
-    #cardsBot1, #cardsBot3{
-        height: 350px;
-    }
-
-    .player2{
+    .bot1{
         min-height: 130px;
     }
 
-    .cardsYou{
+    .cardsHuman{
         min-height: 150px;
     }
 
@@ -217,7 +172,7 @@
         min-height: 210px
     }
 
-    #ktoTeraz{
+    #whoNow{
         font-size: 22px;
     }
 
@@ -225,15 +180,11 @@
         padding: 5px 5px 0px 5px;
     }
 
-    #cardsBot2 img, .centerBoard img{
+    #cardsBot1 img, .centerBoard img{
         max-width: 50px;
     }
 
-    #cardsBot1 img, #cardsBot3 img{
-        max-height: 50px;
-    }
-
-    .cardsYou img, .centerBoard img{
+    .cardsHuman img, .centerBoard img{
         max-width: 60px;
     }
 }
