@@ -17,6 +17,12 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
+            @if (Route::has('login'))
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md grow" href="{{ route('register') }}">
+                    {{ __('Login') }}
+                </a>
+            @endif
+
             <x-primary-button>
                 {{ __('Email Password Reset Link') }}
             </x-primary-button>
