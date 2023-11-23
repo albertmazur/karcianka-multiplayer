@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="py-12">
         <div class="flex gap-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="w-full gap-3 bg-cyan-500 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="w-full gap-3 bg-white  overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex justify-center p-6 text-gray-900">
                     @if ($friends->count()>=1)
                         <ul class="mt-3 flex flex-col">
@@ -25,20 +25,19 @@
                 </div>
             </div>
 
-            <div class="w-full bg-cyan-500 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="flex flex-col justify-center p-6 text-gray-900">
-                    {{__("friend.add")}}
-                    <form action="{{route("friend.add")}}" method="post" class="flex flex-col gap-3">
+            <div class="w-full bg-white  overflow-hidden shadow-sm sm:rounded-lg">
+                    <form action="{{route("friend.add")}}" method="post" class="flex flex-col gap-3 m-4">
                         @method('PUT')
                         @csrf
+                        <x-input-label>{{__("friend.add")}}</x-input-label>
                         <x-text-input name="name" />
-                        <x-primary-button>{{__("Add")}}</x-primary-button>
+                        <x-primary-button class="w-20">{{__("Add")}}</x-primary-button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="w-90 bg-cyan-500 overflow-hidden shadow-sm sm:rounded-lg m-4">
+        <div class="w-90 bg-white  overflow-hidden shadow-sm sm:rounded-lg m-4">
             @if ($invitations->count()>=1)
             <ul class="mt-3 flex flex-col p-2">
             @foreach ($invitations as $invitation)
@@ -48,20 +47,20 @@
                             <form method="POST" action="{{route("friend.accepted")}}" class="inline-flex items-center py-1 px-2 rounded-full text-xs font-medium bg-blue-500 text-white">
                                 @csrf
                                 <input type="hidden" name="id" value="{{$invitation->userFriend->id}}">
-                                <x-my-button>{{__('friend.addinvitations')}}</x-my-button>
+                                <x-primary-button>{{__('friend.invitation.add')}}</x-primary-button>
                             </form>
                             <form method="POST" action="{{route("friend.not-accepted")}}" class="inline-flex items-center py-1 px-2 rounded-full text-xs font-medium bg-blue-500 text-white">
                                 @method("delete")
                                 @csrf
                                 <input type="hidden" name="id" value="{{$invitation->userFriend->id}}">
-                                <x-my-button>{{__('friend.removeinvitations')}}</x-my-button>
+                                <x-primary-button class="">{{__('friend.invitation.remove')}}</x-primary-button>
                             </form>
                     </div>
                 </li>
             @endforeach
             <ul>
         @else
-            <p class="text-center m-5">{{__("friend.notinvitations")}}</p>
+            <p class="text-center m-5">{{__("friend.invitation.not")}}</p>
         @endif
         </div>
 

@@ -1,12 +1,14 @@
 <?php
 return[
-    "friend" => "Przyjaciel",
-    "friends" => "Przyjaciele",
-    "add" => "Podaj przyjaciela",
-    "not" => "Nie masz przyciaciół",
-    "remove" => "Usuń z listy przyjaciół",
-    "notinvitations" => "Brak zaproszeń",
-    "addinvitations" => "Dodaj do znajomych",
-    "removeinvitations" => "Usuń zaproszenie"
+    "friend" => "Znajomy",
+    "friends" => "Znajomi",
+    "add" => "Podaj znajomego",
+    "not" => "Nie masz znajomych",
+    "remove" => "Usuń z listy znajomych",
+    "invitation" => [
+        "not" => "Brak zaproszeń",
+        "add" => "Dodaj do znajomych",
+        "remove" => "Usuń zaproszenie"
+    ]
 ];
 
