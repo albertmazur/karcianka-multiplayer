@@ -1,5 +1,6 @@
 <?php
 return[
     "game" => "Gra",
-    "single" => "Gra samemu"
+    "single" => "Gra sam",
+    "history" => "Historia zagrań"
 ];

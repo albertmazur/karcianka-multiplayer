@@ -5,9 +5,6 @@
     flex-direction: column;
     margin-bottom: 100px;
 
-    div{
-        margin: 5px;
-    }
     img{
         display: inline;
     }
@@ -200,10 +197,6 @@
 }
 
 @media screen and (max-width: 700px) {
-    div{
-        margin: 2px;
-    }
-
     #cardsBot1, #cardsBot3{
         height: 350px;
     }

@@ -1,23 +1,32 @@
 <x-app-layout>
 <div class="game">
-    <div class="board" style="background-image: url( {{asset("storage/background/pool_table_green.png")}} )">
-        <div class="bot player2">
-            <p>Gracz 1</p>
-            <div id="cardsBot2" ></div>
-        </div>
-        <div class="center">
-            <div class="centerBoard" style="background-image: url({{asset("storage/background/pool_table_red.png")}})">
-                <p>Suma kart: <span id="suma"></span></p>
-                <img id="zakryte" src={{asset("storage/cards/background_card.png")}} alt="card">
-                <img id="odkryte" src={{asset("storage/cards/background_card.png")}} alt="card">
-                <p>Ruch grasza:</p><p id="ktoTeraz"></p>
+    <div class="flex flex-col-reverse sm:flex-row sm:m-2">
+        <div class="bg-white flex flex-col sm:items-stretch m-6 h-56 sm:h-[900px] sm:m-3 sm:w-48">
+            <p class="my-5">{{__("game.history")}}</p>
+            <div id="history" class="overflow-auto flex flex-row sm:flex-col">
             </div>
         </div>
-            <div class="you">
-                <p>Ty</p>
-                <div class="cardsYou"></div>
+
+        <div class="board sm:w-full" style="background-image: url( {{asset("storage/background/pool_table_green.png")}} )">
+            <div class="bot player2">
+                <p>Gracz 1</p>
+                <div id="cardsBot2" ></div>
             </div>
+            <div class="center">
+                <div class="centerBoard" style="background-image: url({{asset("storage/background/pool_table_red.png")}})">
+                    <p>Suma kart: <span id="suma"></span></p>
+                    <img id="zakryte" src={{asset("storage/cards/background_card.png")}} alt="card">
+                    <img id="odkryte" src={{asset("storage/cards/background_card.png")}} alt="card">
+                    <p>Ruch grasza:</p><p id="ktoTeraz"></p>
+                </div>
+            </div>
+                <div class="you">
+                    <p>Ty</p>
+                    <div class="cardsYou"></div>
+                </div>
+        </div>
     </div>
+
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg gap-3 m-6 p-6">
         <p class="" >Tryby gry</p>
         <div class="flex justify-center gap-3">

@@ -179,7 +179,9 @@ function dobierzKarte(kto){
     }
     if(kto==gracz2)  bot2Cards.appendChild(img);
 
-    setTimeout(function(){img.classList.add("addCard");}, 50);
+    setTimeout(function(){
+        img.classList.add("addCard");
+    }, 50);
 
     zakryte.splice(0,1);
     sprawdzZakryte();
@@ -187,6 +189,7 @@ function dobierzKarte(kto){
 
 //-------------------------dodwanie kart do gry jeśli branie na stosie-------------
 function sprawdzZakryte(){
+    console.log("zakryte: "+zakryte.length+" odkryte: "+odkryte.length)
     if(zakryte.length==0){
         losujKarty(odkryte);
         odkryte.splice(0, odkryte.length-1);
@@ -195,10 +198,10 @@ function sprawdzZakryte(){
     if(zakryte.length==0 && odkryte.length==1){
         let ktoWygral = document.createElement("p");
         ktoWygral.id="ktoWygral";
-        if(youCards.length > gracz2.length) ktoWygral.innerText="Koniec gry wygrał grasz2. Zagraj od nowa";
-        if(youCards.length < gracz2.length) ktoWygral.innerText="Koniec gry wygrałeś ty. Zagraj od nowa";
-
+        if(youCards.length > gracz2.length) ktoWygral.innerText="Koniec gry wygrał grasz2";
+        if(youCards.length < gracz2.length) ktoWygral.innerText="Koniec gry wygrałeś ty";
         document.querySelector(".centerBoard").insertBefore(ktoWygral, document.querySelector(".centerBoard p"));
+        resetGry();
     }
 }
 
@@ -234,8 +237,11 @@ function wybranieKarty(){
 
         this.classList.remove("addCard");
         this.classList.add("removeCard");
-        let card = this;
-        setTimeout(function(){card.remove(); sprawdzWygrana(ktoTerazGra.innerText);}, 800);
+        let card = this
+        setTimeout(function(){
+            addForHistory(card)
+            sprawdzWygrana(ktoTerazGra.innerText);
+        }, 800);
 
         setTimeout(function(){
             bot()
@@ -259,7 +265,7 @@ function ruchBota(cards){
 
 
     if(zagranaKarta != null){
-        console.log("Karta bota"+zagranaKarta.innerHTML)
+        //console.log("Karta bota"+zagranaKarta.innerHTML)
         sprawdzeniaKarty(zagranaKarta.getAttribute("alt"))
         jestKarta=true
     }
@@ -271,14 +277,13 @@ function ruchBota(cards){
     //         break;
     //     }
     // }
-    console.log("Porzednia karta:" + kartaNaWidoku.innerHTML)
-    console.log(zagranaKarta)
+    //console.log("Porzednia karta:" + kartaNaWidoku.innerHTML)
     zmienKarte(jestKarta, zagranaKarta);
 }
 
 function heurystyczne(cards){
-    let pasujaceBitewne = []
-    let pasujaceNieBitewne = []
+    let kartySpecjalne = []
+    let katyNieSpacjalne = []
     for(let card of cards){
         let cardAlt = card.getAttribute("alt")
         let kartaNaWidokuAlt = kartaNaWidoku.getAttribute("alt");
@@ -297,16 +302,16 @@ function heurystyczne(cards){
                wybranaKartaZnak == "0Q" ||
                wybranaKartaZnak == "0A")
             {
-                pasujaceBitewne.push(card)
+                kartySpecjalne.push(card)
             }
             else{
-                pasujaceNieBitewne.push(card)
+                katyNieSpacjalne.push(card)
             }
         }
     }
 
     if(youCards.length<=2){
-        for(let card of pasujaceBitewne){
+        for(let card of kartySpecjalne){
             let znak = card.getAttribute("alt").substring(0,2)
             if(znak=="02" || znak=="03" || znak=="0K"){
                 return card
@@ -314,16 +319,15 @@ function heurystyczne(cards){
         }
     }
 
-    if(pasujaceNieBitewne.length>0){
-        console.log("nie bitewne:")
-        console.log(pasujaceNieBitewne)
-        return pasujaceNieBitewne.pop()
+    let kartaNaWidokuZnak = kartaNaWidoku.getAttribute("alt").substring(0,2)
+    if(katyNieSpacjalne.length>0 && (suma==0 && !(kartaNaWidokuZnak=="02" || kartaNaWidokuZnak=="03" || kartaNaWidokuZnak=="0K"))){
+        //console.log("nie bitewne: " + pasujaceNieBitewne)
+        return katyNieSpacjalne.pop()
     }
 
-    if(pasujaceBitewne.length>0){
-        console.log("bitewne:")
-        console.log(pasujaceNieBitewne)
-        return pasujaceBitewne.pop()
+    if(kartySpecjalne.length>0){
+        //console.log("bitewne: "+ pasujaceNieBitewne)
+        return kartySpecjalne.pop()
     }
     return null
 }
@@ -338,7 +342,6 @@ function sprawdzeniaKarty(wybranaKarta){
     let kartaPodFigura = kartaPod.substring(3, kartaPod.length);
 
     if((wybranaKartaZnak==kartaPodZnak || wybranaKartaFigura==kartaPodFigura)){
-
         switch(wybranaKartaZnak){
             case "02":
                 suma+=2;
@@ -380,21 +383,25 @@ function sprawdzeniaKarty(wybranaKarta){
 //---------------------------Ustawienie katy na stos która zosała zagrana--------------------
 function zmienKarte(jestKarta, zagranaKarta){
     if(jestKarta){
-        console.log("czy to to:"+ kartyImg.length)
         kartaNaWidoku.setAttribute("src", kartyImg.at(karty.indexOf(zagranaKarta.getAttribute('alt'))).getAttribute("src"));
         kartaNaWidoku.setAttribute("alt", zagranaKarta.getAttribute("alt"));
         odkryte.push(zagranaKarta.getAttribute("alt"));
 
         zagranaKarta.classList.remove("addCard");
         zagranaKarta.classList.add("removeCard");
-        setTimeout(function(){zagranaKarta.remove(); sprawdzWygrana(ktoTerazGra.innerText);}, 800);
+        setTimeout(function(){
+            addForHistory(zagranaKarta)
+            sprawdzWygrana(ktoTerazGra.innerText)
+        }, 800);
     }
     else{
         for(let i=1; i<suma; i++) dobierzKarte(ktoTerazGra.innerText);
         dobierzKarte(ktoTerazGra.innerText);
         suma=0;
         sumaSpan.innerText="";
-        setTimeout(function(){sprawdzWygrana(ktoTerazGra.innerText);}, 800);
+        setTimeout(function(){
+            sprawdzWygrana(ktoTerazGra.innerText);
+        }, 800);
     }
 }
 
@@ -470,4 +477,13 @@ function resetGry(){
     suma=0;
 
     imgDobieranieKart.classList.remove("zakryte");
+}
+
+function addForHistory(card){
+    let historyGame = document.getElementById("history")
+    card.style = ""
+    card.classList.remove("removeCard")
+    card.classList.add("m-2", "sm:m-4", "my-2")
+    if(historyGame.children.length == 0) historyGame.appendChild(card)
+    else historyGame.insertBefore(card, historyGame.firstChild)
 }

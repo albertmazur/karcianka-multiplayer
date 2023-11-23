@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="flex flex-col py-12 sm:px-6 lg:px-8">
-        <div class="flex gap-3 felx-col sm:flex-row">
+        <div class="flex gap-3 flex-col sm:flex-row">
             <div class="w-full gap-3 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex justify-center p-6 text-gray-900">
                     @if ($friends->count()>=1)
