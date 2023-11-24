@@ -271,7 +271,9 @@ function ruchBota(cards){
     let playedCard
     let isCard=false
     if(mode == "Heurystyczne") playedCard = heurystyczne(cards)
+    if(mode == "Heurystyczne") playedCard = mcts(cards)
 
+    console.log(playedCard)
 
     if(playedCard != null){
         checkCard(playedCard.getAttribute("alt"))
@@ -336,6 +338,11 @@ function heurystyczne(cards){
 
 function helpConditionHeurystyczne(sing){
     return (sing == "02" || sing == "03" || sing == "0J" || sing == "0K" || sing == "0A")
+}
+
+//------------------Monte Carlo Tree Search-----------------------
+function mcts(cardPlayed) {
+
 }
 
 //-------------------Checks if this card can be played----------------
