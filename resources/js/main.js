@@ -1,6 +1,6 @@
 const PLAYERS = Object.freeze({ HUMAN: "Człowek", BOT: "Bot" });
 
-let mainCards = [];
+const mainCards = [];
 mainCards[0] = "02_Trefl"
 mainCards[1] = "03_Trefl"
 mainCards[2] = "04_Trefl"
@@ -58,28 +58,6 @@ mainCards[51] = "0A_Karo"
 let newGame = document.getElementById("start")
 newGame.addEventListener("click", playGame)
 
-let mainCardsImg = []
-
-//--------------------Stacks of cards--------------------
-let coverMainCards = []
-let uncoverMainCards = []
-
-//---------------Player cards----------------------------------------------------------
-let botCards = document.querySelector("#cardsBot1")
-let humanCards = document.querySelector(".cardsHuman")
-
-//---------------Support for the number of cards to download--------------------------------
-let sumaSpan = document.querySelector(".centerBoard span")
-let suma = 0
-
-//-----------------The last card that was played--------------------------------------
-let coverMainCard = document.querySelector("#coverMainCards")
-let uncoverMainCard = document.querySelector("#uncoverMainCards")
-
-//-----------------Whose move----------------------------------
-let whoNow = document.getElementById("whoNow")
-
-//------------------Game launch and launch support----------------------------------------------
 let mode
 let firstPlay = true
 
@@ -90,19 +68,11 @@ class GameState {
         this.botCards = botCards
         this.humanCards = humanCards
         this.coverCards = coverCards
-        this.uncoverCards= uncoverCards
+        this.uncoverCards = uncoverCards
         this.player = player
         this.suma = suma
 
         if(firstPlay){
-            console.log("Kart bota")
-            console.log(botCards)
-            console.log("Kart człowieka")
-            console.log(humanCards)
-            console.log("Karty uncover")
-            console.log(uncoverCards)
-            console.log("Karty cover")
-            console.log(coverCards)
             firstPlay = false
         }
     }
@@ -112,10 +82,8 @@ class GameState {
     get possibleMoves() {
         let possibleCard = []
         let unCard = this.uncoverCards[0]
-        console.log("Uncard: " + unCard)
         let uncoverCardSign = unCard.substring(0, 2)
         let uncoverCardFigure = unCard.substring(3, unCard.length)
-        console.log("Bot cards: "+  this.botCards)
         this.botCards.forEach(card => {
 
             let cardSign = card.substring(0,2)
@@ -125,14 +93,10 @@ class GameState {
                 possibleCard.push(card)
             }
         })
-        console.log("CoverCads: "+this.coverCards.length)
         if(this.coverCards.length>0){
             possibleCard.push("add")
         }
-        console.log("Możliwe ruchy:"+ possibleCard)
         return possibleCard
-
-        //return this.board.map((v, i) => v === ' ' ? i : null).filter(i => i !== null);
     }
 
     // Robi ruch
@@ -144,24 +108,22 @@ class GameState {
         let newSuma = this.suma
         if(this.player == PLAYERS.BOT){
             if(move == "add"){
-                for(let i=1; i<newSuma; i++) newBotCards.push(newCoverCards.pop())
-                newBotCards.push(newCoverCards.pop())
+                for(let i=1; i<=newSuma; i++) newBotCards.push(newCoverCards.pop())
                 newSuma = 0
             }
             else{
-                newUncoverCards.push(newBotCards[newBotCards.indexOf(move)])
-                delete newBotCards[newBotCards.indexOf(move)]
+                newUncoverCards.push(move)
+                newBotCards.splice(newBotCards.indexOf(move), 1);
             }
         }
         if(this.player == PLAYERS.HUMAN){
             if(move == "add"){
-                for(let i=1; i<newSuma; i++) newHumanCards.push(newCoverCards.pop())
-                newHumanCards.push(newCoverCards.pop())
+                for(let i=0; i<=newSuma; i++) newHumanCards.push(newCoverCards.pop())
                 newSuma = 0
             }
             else{
-                newUncoverCards.push(newHumanCards[newHumanCards.indexOf(move)])
-                delete newHumanCards[newHumanCards.indexOf(move)];
+                newUncoverCards.push(move)
+                newHumanCards.splice(newHumanCards.indexOf(move), 1)
             }
         }
         if(move != "add")
@@ -193,7 +155,7 @@ class GameState {
         else{
             if(newCoverCards.length==0){
                 newCoverCards = shuffleCards(newUncoverCards)
-                uncoverMainCards.splice(0, newUncoverCards.length-1)
+                newUncoverCards.splice(0, newUncoverCards.length-1)
                 newCoverCards.splice(newCoverCards.indexOf(newUncoverCards[0]), 1)
             }
         }
@@ -208,16 +170,15 @@ class GameState {
         else return false
     }
 
-
     // zwraca zwicięscę
     get winner() {
         if (!this.isGameOver) {
             return null;
         }
-        if(humanCards.length==0 || ((this.coverCards.length == 0 && this.uncoverCards.length==1) && humanCards.length < botCards.length)){
+        if(this.humanCards.length==0 || ((this.coverCards.length == 0 && this.uncoverCards.length==1) && this.humanCards.length < this.botCards.length)){
             return PLAYERS.HUMAN
         }
-        if(botCards.length==0 || ((this.coverCards.length == 0  && this.uncoverCards.length==1) && humanCards.length > botCards.length)){
+        if(this.botCards.length==0 || ((this.coverCards.length == 0  && this.uncoverCards.length==1) && this.humanCards.length > this.botCards.length)){
             return PLAYERS.BOT
         }
     }
@@ -238,6 +199,7 @@ function playGame() {
     let bCards = []
     let coverCards = shuffleCards(mainCards)
     let uncoverCards = []
+
     for(let i=0; i<10;i++){
         if(i%2==0) hCards.push(coverCards.pop())
         if(i%2==1) bCards.push(coverCards.pop())
@@ -248,20 +210,17 @@ function playGame() {
     let sing = uncoverCards[0].substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") playGame()
     else{
-        let state = new GameState(hCards, bCards, coverCards, uncoverCards)
+        let state = new GameState(hCards, bCards, coverCards, uncoverCards, PLAYERS.HUMAN, 0)
 
         // Do póki nie ma końca gry//
         while (!state.isGameOver) {
             let move;
-            console.log("czyj ruch:"+ state.player)
             if (state.player === PLAYERS.BOT) {
                 //Ruch bota
                 move = mcts(state, 1);
             }
             else {
                 move = "add"
-                //Ruch grasza
-                //move = prompt("Your move (0-8): ");
             }
             //Robi ruch
             state = state.makeMove(move);
