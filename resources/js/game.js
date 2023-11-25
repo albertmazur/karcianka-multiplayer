@@ -1,66 +1,11 @@
 import './gameStyle'
 
 const PLAYERS = Object.freeze({ HUMAN: "Człowek", BOT: "Bot" });
+
 //-----------------Card names--------------------------------
-const mainCards = [];
-
-mainCards[0] = "02_Trefl"
-mainCards[1] = "03_Trefl"
-mainCards[2] = "04_Trefl"
-mainCards[3] = "05_Trefl"
-mainCards[4] = "06_Trefl"
-mainCards[5] = "07_Trefl"
-mainCards[6] = "08_Trefl"
-mainCards[7] = "09_Trefl"
-mainCards[8] = "10_Trefl"
-mainCards[9] = "0J_Trefl"
-mainCards[10] = "0Q_Trefl"
-mainCards[11] = "0K_Trefl"
-mainCards[12] = "0A_Trefl"
-mainCards[13] = "02_Pik"
-mainCards[14] = "03_Pik"
-mainCards[15] = "04_Pik"
-mainCards[16] = "05_Pik"
-mainCards[17] = "06_Pik"
-mainCards[18] = "07_Pik"
-mainCards[19] = "08_Pik"
-mainCards[20] = "09_Pik"
-mainCards[21] = "10_Pik"
-mainCards[22] = "0J_Pik"
-mainCards[23] = "0Q_Pik"
-mainCards[24] = "0K_Pik"
-mainCards[25] = "0A_Pik"
-mainCards[26] = "02_Kier"
-mainCards[27] = "03_Kier"
-mainCards[28] = "04_Kier"
-mainCards[29] = "05_Kier"
-mainCards[30] = "06_Kier"
-mainCards[31] = "07_Kier"
-mainCards[32] = "08_Kier"
-mainCards[33] = "09_Kier"
-mainCards[34] = "10_Kier"
-mainCards[35] = "0J_Kier"
-mainCards[36] = "0Q_Kier"
-mainCards[37] = "0K_Kier"
-mainCards[38] = "0A_Kier"
-mainCards[39] = "02_Karo"
-mainCards[40] = "03_Karo"
-mainCards[41] = "04_Karo"
-mainCards[42] = "05_Karo"
-mainCards[43] = "06_Karo"
-mainCards[44] = "07_Karo"
-mainCards[45] = "08_Karo"
-mainCards[46] = "09_Karo"
-mainCards[47] = "10_Karo"
-mainCards[48] = "0J_Karo"
-mainCards[49] = "0Q_Karo"
-mainCards[50] = "0K_Karo"
-mainCards[51] = "0A_Karo"
-
+const mainCards = ["02_Trefl", "03_Trefl", "04_Trefl", "05_Trefl", "06_Trefl", "07_Trefl", "08_Trefl", "09_Trefl", "10_Trefl", "0J_Trefl", "0Q_Trefl", "0K_Trefl", "0A_Trefl", "02_Pik", "03_Pik", "04_Pik", "05_Pik", "06_Pik", "07_Pik", "08_Pik", "09_Pik", "10_Pik", "0J_Pik", "0Q_Pik", "0K_Pik", "0A_Pik", "02_Kier", "03_Kier", "04_Kier", "05_Kier", "06_Kier", "07_Kier", "08_Kier", "09_Kier", "10_Kier", "0J_Kier", "0Q_Kier", "0K_Kier", "0A_Kier", "02_Karo", "03_Karo", "04_Karo", "05_Karo", "06_Karo", "07_Karo", "08_Karo", "09_Karo", "10_Karo", "0J_Karo", "0Q_Karo", "0K_Karo", "0A_Karo"];
 let mainCardsImg = []
 
-//----------------Player names------------------------
-let human = "TY"
 //--------------------Stacks of cards--------------------
 let coverMainCards = []
 let uncoverMainCards = []
@@ -74,8 +19,8 @@ let sumaSpan = document.querySelector(".centerBoard span")
 let suma = 0
 
 //-----------------The last card that was played--------------------------------------
-let coverMainCard = document.querySelector("#coverMainCards")
-let uncoverMainCard = document.querySelector("#uncoverMainCards")
+let coverMainCardImg = document.querySelector("#coverMainCards")
+let uncoverMainCardImg = document.querySelector("#uncoverMainCards")
 
 //-----------------Whose move----------------------------------
 let whoNow = document.getElementById("whoNow")
@@ -93,14 +38,14 @@ function start(){
             let img = document.createElement("img")
             img.setAttribute("alt", mainCards[i])
             img.setAttribute("src", '/storage/cards/'+mainCards[i]+'.png')
-            mainCardsImg.push(img);
+            mainCardsImg.unshift(img);
         }
     }
 
     newGame.textContent="Od nowa"
     firstGame = false
 
-    uncoverMainCard.addEventListener("click", drawUncoverMain)
+    coverMainCardImg.addEventListener("click", drawUncoverMain)
 
     resetGames()
 
@@ -109,12 +54,12 @@ function start(){
 
     whoNow.innerText=PLAYERS.HUMAN
 
-    uncoverMainCard.classList.add("cover")
+    coverMainCardImg.classList.add("cover")
 
     coverMainCards = shuffleCards(mainCards)
 
     for(let i=0; i<10;i++){
-        let img = creatCard(coverMainCards.pop())
+        let img = creatCard(coverMainCards.shift())
 
         if(i%2==0) youCards.appendChild(img)
         if(i%2==1){
@@ -123,19 +68,19 @@ function start(){
         }
     }
 
-    uncoverMainCards.push(coverMainCards.pop())
 
-    let sing = uncoverMainCards[0].substring(0,2)
+    let sing = coverMainCards[0].substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
 
-    coverMainCard.setAttribute("src", "/storage/cards/"+uncoverMainCards[0]+".png")
-    coverMainCard.setAttribute("alt", uncoverMainCards[0])
+    uncoverMainCards.unshift(coverMainCards.shift())
+    uncoverMainCardImg.setAttribute("src", "/storage/cards/"+uncoverMainCards.at(0)+".png")
+    uncoverMainCardImg.setAttribute("alt", uncoverMainCards.at(0))
 
     let history = document.getElementById("history")
     while (history.firstChild) {
         history.removeChild(history.firstChild);
     }
-    history.appendChild(coverMainCard.cloneNode(true))
+    history.appendChild(uncoverMainCardImg.cloneNode(true))
 
     for(let card of youCards.children){
         card.addEventListener("click", selectingCard)
@@ -174,7 +119,7 @@ function creatCard(card){
 
 //-----------Adding a card for player------------------
 function drawCard(who){
-    let img = creatCard(coverMainCards.pop())
+    let img = creatCard(coverMainCards.shift())
 
     img.style.opacity = 0
 
@@ -189,16 +134,8 @@ function drawCard(who){
     }, 50)
 
     checkCoverCards()
-}
 
-//-------------------------Adding cards to the game if taking from the pile-------------
-function checkCoverCards(){
-    //console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
-    if(coverMainCards.length==0){
-        coverMainCards = shuffleCards(uncoverMainCards)
-        uncoverMainCards.splice(0, uncoverMainCards.length-1)
-        coverMainCards.splice(coverMainCards.indexOf(uncoverMainCards[0]), 1)
-    }
+    console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
     if(coverMainCards.length==0 && uncoverMainCards.length==1){
         let whoWin = document.createElement("p")
         whoWin.id="whoWin"
@@ -206,6 +143,15 @@ function checkCoverCards(){
         if(youCards.length < bot1Cards.length) whoWin.innerText="Koniec gry wygrałeś ty"
         document.querySelector(".centerBoard").insertBefore(whoWin, document.querySelector(".centerBoard p"))
         resetGames()
+    }
+}
+
+//-------------------------Adding cards to the game if taking from the pile-------------
+function checkCoverCards(){
+    if(coverMainCards.length==0){
+        coverMainCards = shuffleCards(uncoverMainCards)
+        uncoverMainCards.splice(0, uncoverMainCards.length-1)
+        coverMainCards.splice(coverMainCards.indexOf(uncoverMainCards[0]), 1)
     }
 }
 
@@ -234,13 +180,13 @@ function shuffleCards(deckToShuffle) {
 
 //---------------------------Function called after selecting a card-----------------------------
 function selectingCard(){
-    let wybranaKarta = this.getAttribute('alt')
+    let selectingCardAlt = this.getAttribute('alt')
 
-    if(whoNow.innerText==PLAYERS.HUMAN && checkCard(wybranaKarta)){
-        uncoverMainCards.push(wybranaKarta)
+    if(whoNow.innerText==PLAYERS.HUMAN && checkCard(selectingCardAlt)){
+        uncoverMainCards.unshift(selectingCardAlt)
 
-        coverMainCard.setAttribute("src", "/storage/cards/"+wybranaKarta+".png")
-        coverMainCard.setAttribute("alt", wybranaKarta)
+        uncoverMainCardImg.setAttribute("src", "/storage/cards/"+selectingCardAlt+".png")
+        uncoverMainCardImg.setAttribute("alt", selectingCardAlt)
 
         this.classList.remove("addCard")
         this.classList.add("removeCard")
@@ -261,8 +207,7 @@ function selectingCard(){
 
 //-------------------------Obsługa boty----------------------------
 function bot(){
-    let who = whoNow.innerText
-    if(who==PLAYERS.BOT) ruchBota(bot1Cards.children)
+    if(whoNow.innerText==PLAYERS.BOT) ruchBota(bot1Cards.children)
 }
 
 //------------------------------Bot movement-------------------------------------
@@ -286,16 +231,16 @@ function heurystyczne(cards){
     let cardsSpecial = []
     let cardsNotSpecial = []
 
+    let unCoverCardAlt = uncoverMainCardImg.getAttribute("alt")
     for(let card of cards){
         let cardAlt = card.getAttribute("alt")
-        let coverCardAlt = coverMainCard.getAttribute("alt")
 
         let cardSign = cardAlt.substring(0,2)
         let cardFigure = cardAlt.substring(3, cardAlt.length)
-        let coverCardSign = coverCardAlt.substring(0,2)
-        let coverCardFigure = coverCardAlt.substring(3, coverCardAlt.length)
+        let unCoverCardSign = unCoverCardAlt.substring(0,2)
+        let unCoverCardFigure = unCoverCardAlt.substring(3, unCoverCardAlt.length)
 
-        if(cardSign==coverCardSign || cardFigure==coverCardFigure){
+        if(cardSign==unCoverCardSign || cardFigure==unCoverCardFigure){
 
             if(cardSign == "02" ||
                cardSign == "03" ||
@@ -304,10 +249,10 @@ function heurystyczne(cards){
                cardSign == "0Q" ||
                cardSign == "0A")
             {
-                cardsSpecial.push(card)
+                cardsSpecial.unshift(card)
             }
             else{
-                cardsNotSpecial.push(card)
+                cardsNotSpecial.unshift(card)
             }
         }
     }
@@ -321,22 +266,15 @@ function heurystyczne(cards){
         }
     }
 
-    let coverCardSign = coverMainCard.getAttribute("alt").substring(0,2)
-    if (cardsNotSpecial.length > 0 &&
-        ((suma == 0 && !helpConditionHeurystyczne(coverCardSign)) ||
-         (suma != 0 &&  helpConditionHeurystyczne(coverCardSign)))) {
-        return cardsNotSpecial.pop()
+    if (cardsNotSpecial.length > 0 && suma==0) {
+        return cardsNotSpecial.shift()
     }
 
     if(cardsSpecial.length>0){
-        return cardsSpecial.pop()
+        return cardsSpecial.shift()
     }
 
     return null
-}
-
-function helpConditionHeurystyczne(sing){
-    return (sing == "02" || sing == "03" || sing == "0J" || sing == "0K" || sing == "0A")
 }
 
 //------------------Monte Carlo Tree Search-----------------------
@@ -344,15 +282,14 @@ function mcts(cardPlayed) {
     let cardPlayedAlt = [];
     let youCardsdAlt = [];
     for (let card of cardPlayed) {
-        cardPlayedAlt.push(card.alt);
+        cardPlayedAlt.unshift(card.alt);
     }
     for (let card of youCards.children) {
-        youCardsdAlt.push(card.alt);
+        youCardsdAlt.unshift(card.alt);
     }
-
     let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma);
     let bestMove = runMCTS(initialState, 1000); // 1000 iterations
-    console.log(bestMove)
+    //console.log(bestMove)
     if(bestMove == "add"){
         return null
     }
@@ -361,7 +298,7 @@ function mcts(cardPlayed) {
 
 //-------------------Checks if this card can be played----------------
 function checkCard(selectedCard){
-    let coverCard = coverMainCard.getAttribute("alt")
+    let coverCard = uncoverMainCardImg.getAttribute("alt")
 
     let selectedCardSign = selectedCard.substring(0,2)
     let selectedCardFigure = selectedCard.substring(3, selectedCard.length)
@@ -410,31 +347,29 @@ function checkCard(selectedCard){
 //---------------------------Putting the card that has been played into the stack--------------------
 function changeCard(isCard, selectedCard){
     if(isCard){
-        coverMainCard.setAttribute("src", mainCardsImg.at(mainCards.indexOf(selectedCard.getAttribute('alt'))).getAttribute("src"))
-        coverMainCard.setAttribute("alt", selectedCard.getAttribute("alt"))
-        uncoverMainCards.push(selectedCard.getAttribute("alt"))
+        uncoverMainCardImg.setAttribute("src", selectedCard.getAttribute("src"))
+        uncoverMainCardImg.setAttribute("alt", selectedCard.getAttribute("alt"))
+        uncoverMainCards.unshift(selectedCard.getAttribute("alt"))
 
         selectedCard.classList.remove("addCard")
         selectedCard.classList.add("removeCard")
-        setTimeout(function(){
-            addForHistory(selectedCard)
-            checkWin(whoNow.innerText)
-        }, 800);
+        addForHistory(selectedCard)
     }
     else{
         for(let i=1; i<suma; i++) drawCard(whoNow.innerText)
         drawCard(whoNow.innerText)
+
         suma=0;
         sumaSpan.innerText=""
-        setTimeout(function(){
-            checkWin(whoNow.innerText)
-        }, 800)
+
     }
+    setTimeout(function(){
+        checkWin(whoNow.innerText)
+    }, 800)
 }
 
 //--------------Checking if someone won------------
 function checkWin(who){
-
     let cards
     switch(who){
         case PLAYERS.HUMAN:
@@ -475,7 +410,7 @@ function resetGames(){
 
     suma=0
 
-    uncoverMainCard.classList.remove("coverMainCards")
+    uncoverMainCardImg.classList.remove("coverMainCards")
 }
 
 //---------------------Add history----------------
@@ -501,20 +436,27 @@ class GameState {
     getPossibleMoves() {
         let possibleCard = []
         let unCard = this.uncoverCards[0]
-        console.log(unCard)
         let uncoverCardSign = unCard.substring(0, 2)
         let uncoverCardFigure = unCard.substring(3, unCard.length)
+        //console.log(this.coverCards)
         this.botCards.forEach(card => {
             let cardSign = card.substring(0,2)
             let cardFigure = card.substring(3, card.length)
 
-            if((cardSign==uncoverCardSign || cardFigure==uncoverCardFigure)){
-                possibleCard.push(card)
+            if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                if(this.suma == 0) possibleCard.unshift(card)
+                else if(cardSign == "02" ||
+                cardSign == "03" ||
+                cardSign == "0K" ||
+                cardSign == "0J" ||
+                cardSign == "0Q" ||
+                cardSign == "0A")possibleCard.unshift(card)
             }
         })
         if(this.coverCards.length>0){
             possibleCard.push("add")
         }
+        console.log(possibleCard)
         return possibleCard
     }
 
@@ -527,21 +469,23 @@ class GameState {
         let newSuma = this.suma
         if(this.player == PLAYERS.BOT){
             if(move == "add"){
-                for(let i=1; i<=newSuma; i++) newBotCards.push(newCoverCards.pop())
+                for(let i=1; i<newSuma; i++) newBotCards.unshift(newCoverCards.shift())
+                newBotCards.unshift(newCoverCards.shift())
                 newSuma = 0
             }
             else{
-                newUncoverCards.push(move)
+                newUncoverCards.unshift(move)
                 newBotCards.splice(newBotCards.indexOf(move), 1);
             }
         }
         if(this.player == PLAYERS.HUMAN){
             if(move == "add"){
-                for(let i=0; i<=newSuma; i++) newHumanCards.push(newCoverCards.pop())
+                for(let i=1; i<newSuma; i++) newHumanCards.unshift(newCoverCards.shift())
+                newHumanCards.unshift(newCoverCards.shift())
                 newSuma = 0
             }
             else{
-                newUncoverCards.push(move)
+                newUncoverCards.unshift(move)
                 newHumanCards.splice(newHumanCards.indexOf(move), 1)
             }
         }
@@ -575,7 +519,10 @@ class GameState {
             if(newCoverCards.length==0){
                 newCoverCards = shuffleCards(newUncoverCards)
                 newUncoverCards.splice(0, newUncoverCards.length-1)
-                newCoverCards.splice(newCoverCards.indexOf(newUncoverCards[0]), 1)
+                newCoverCards.pop()
+                //console.log("Jestem")
+                //console.log(newCoverCards)
+                //console.log(newUncoverCards)
             }
         }
 
@@ -585,7 +532,10 @@ class GameState {
 
     // Check if the game has ended
     isGameOver() {
-        if(this.humanCards.length == 0 || this.botCards.length == 0 || this.coverCards.length == 0) return true
+        if(this.humanCards.length == 0 || this.botCards.length == 0 || (this.coverCards.length == 0 && this.uncoverCards.length==1)){
+            console.log("Jestem")
+            return true
+        }
         else return false
     }
 }

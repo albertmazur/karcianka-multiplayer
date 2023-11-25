@@ -56,12 +56,12 @@
         min-height: 190px;
     }
 
-    .cardsHuman img, #uncoverMainCards{
+    .cardsHuman img, .cover{
         transition: 0.2s ease-in-out;
         cursor: pointer;
     }
 
-    .cardsHuman img:hover, #uncoverMainCards:hover{
+    .cardsHuman img:hover, .cover:hover{
         transform: scale(1.2);
         transition: 0.2s ease-in-out;
     }
