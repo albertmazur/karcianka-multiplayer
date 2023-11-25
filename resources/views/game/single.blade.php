@@ -68,6 +68,6 @@
             background-image: url({{asset("storage/background/pool_table_red.png")}})
         }
     </style>
-    @vite([ 'resources/js/game.js',])
+    @vite([ 'resources/js/main.js',])
 </div>
 </x-app-layout>

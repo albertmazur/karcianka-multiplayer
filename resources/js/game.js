@@ -109,12 +109,12 @@ function start(){
 
     whoNow.innerText=human
 
-    uncoverMainCard.classList.add("zakryte")
+    uncoverMainCard.classList.add("cover")
 
-    shuffleCards(mainCards)
+    coverMainCards = shuffleCards(mainCards)
 
     for(let i=0; i<10;i++){
-        let img = creatCard(coverMainCards[i])
+        let img = creatCard(coverMainCards.pop())
 
         if(i%2==0) youCards.appendChild(img)
         if(i%2==1){
@@ -122,11 +122,8 @@ function start(){
             bot1Cards.appendChild(img)
         }
     }
-
-    coverMainCards.splice(0,10)
-
-    uncoverMainCards.push(coverMainCards[0])
-    coverMainCards.splice(0,1)
+    
+    uncoverMainCards.push(coverMainCards.pop())
 
     let sing = uncoverMainCards[0].substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
@@ -175,9 +172,9 @@ function creatCard(card){
     return img
 }
 
-//-----------Adding a card for grasz------------------
+//-----------Adding a card for player------------------
 function drawCard(who){
-    let img = creatCard(coverMainCards[0])
+    let img = creatCard(coverMainCards.pop())
 
     img.style.opacity = 0
 
@@ -191,7 +188,6 @@ function drawCard(who){
         img.classList.add("addCard")
     }, 50)
 
-    coverMainCards.splice(0,1)
     checkCoverCards()
 }
 
@@ -199,7 +195,7 @@ function drawCard(who){
 function checkCoverCards(){
     console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
     if(coverMainCards.length==0){
-        shuffleCards(uncoverMainCards)
+        coverMainCards = shuffleCards(uncoverMainCards)
         uncoverMainCards.splice(0, uncoverMainCards.length-1)
         coverMainCards.splice(coverMainCards.indexOf(uncoverMainCards[0]), 1)
     }
@@ -218,6 +214,7 @@ function shuffleCards(deckToShuffle) {
     let n=deckToShuffle.length;
     let k=n;
     let numbers = new Array(n);
+    let coverCards = []
 
     for (let i=0; i<n; i++) {
         numbers[i] = i + 1
@@ -226,11 +223,13 @@ function shuffleCards(deckToShuffle) {
     for (let i=0; i<k; i++) {
         let r = Math.floor(Math.random()*n)
 
-        coverMainCards[i]=deckToShuffle[numbers[r]-1]
+        coverCards[i]=deckToShuffle[numbers[r]-1]
 
         numbers[r] = numbers[n - 1]
         n--
     }
+
+    return coverCards
 }
 
 //---------------------------Function called after selecting a card-----------------------------
@@ -291,19 +290,19 @@ function heurystyczne(cards){
         let cardAlt = card.getAttribute("alt")
         let coverCardAlt = coverMainCard.getAttribute("alt")
 
-        let cardsSpecialSign = cardAlt.substring(0,2)
-        let cardsSpecialFigure = cardAlt.substring(3, cardAlt.length)
+        let cardSign = cardAlt.substring(0,2)
+        let cardFigure = cardAlt.substring(3, cardAlt.length)
         let coverCardSign = coverCardAlt.substring(0,2)
         let coverCardFigure = coverCardAlt.substring(3, coverCardAlt.length)
 
-        if(cardsSpecialSign==coverCardSign || cardsSpecialFigure==coverCardFigure){
+        if(cardSign==coverCardSign || cardFigure==coverCardFigure){
 
-            if(cardsSpecialSign == "02" ||
-               cardsSpecialSign == "03" ||
-               cardsSpecialSign == "0K" ||
-               cardsSpecialSign == "0J" ||
-               cardsSpecialSign == "0Q" ||
-               cardsSpecialSign == "0A")
+            if(cardSign == "02" ||
+               cardSign == "03" ||
+               cardSign == "0K" ||
+               cardSign == "0J" ||
+               cardSign == "0Q" ||
+               cardSign == "0A")
             {
                 cardsSpecial.push(card)
             }
