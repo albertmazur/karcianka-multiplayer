@@ -1,7 +1,8 @@
 import './gameStyle'
 
+const PLAYERS = Object.freeze({ HUMAN: "Człowek", BOT: "Bot" });
 //-----------------Card names--------------------------------
-let mainCards = [];
+const mainCards = [];
 
 mainCards[0] = "02_Trefl"
 mainCards[1] = "03_Trefl"
@@ -59,7 +60,6 @@ mainCards[51] = "0A_Karo"
 let mainCardsImg = []
 
 //----------------Player names------------------------
-let bot1 = "BOT 1"
 let human = "TY"
 //--------------------Stacks of cards--------------------
 let coverMainCards = []
@@ -107,7 +107,7 @@ function start(){
     let whoWin = document.querySelector("#whoWin")
     if(whoWin != null)  whoWin.remove()
 
-    whoNow.innerText=human
+    whoNow.innerText=PLAYERS.HUMAN
 
     uncoverMainCard.classList.add("cover")
 
@@ -122,7 +122,7 @@ function start(){
             bot1Cards.appendChild(img)
         }
     }
-    
+
     uncoverMainCards.push(coverMainCards.pop())
 
     let sing = uncoverMainCards[0].substring(0,2)
@@ -146,14 +146,14 @@ function start(){
 
 //-------------Adding a card for grasz after clicking face down--------------------
 function drawUncoverMain(){
-    if(whoNow.innerText==human){
-        for(let i=1;i<suma;i++) drawCard(human)
-        drawCard(human)
+    if(whoNow.innerText==PLAYERS.HUMAN){
+        for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
+        drawCard(PLAYERS.HUMAN)
 
         suma = 0
         sumaSpan.innerText = ""
 
-        whoNow.innerText=bot1
+        whoNow.innerText=PLAYERS.BOT
 
          setTimeout(function (){
              bot()
@@ -165,7 +165,7 @@ function drawUncoverMain(){
 //----------------Creating cards-----------------------------
 function creatCard(card){
     let img = document.createElement("img")
-    if (whoNow.innerText==human) img.setAttribute("src", '/storage/cards/'+card+'.png')
+    if (whoNow.innerText==PLAYERS.HUMAN) img.setAttribute("src", '/storage/cards/'+card+'.png')
     // else img.setAttribute("src", '/storage/cards/background_card.png')
     else img.setAttribute("src", '/storage/cards/'+card+'.png')
     img.setAttribute("alt", card)
@@ -178,11 +178,11 @@ function drawCard(who){
 
     img.style.opacity = 0
 
-    if(who==human && whoNow.innerText==human){
+    if(who==PLAYERS.HUMAN && whoNow.innerText==PLAYERS.HUMAN){
         img.addEventListener("click", selectingCard)
         youCards.appendChild(img)
     }
-    if(who==bot1)  bot1Cards.appendChild(img)
+    if(who==PLAYERS.BOT)  bot1Cards.appendChild(img)
 
     setTimeout(function(){
         img.classList.add("addCard")
@@ -193,7 +193,7 @@ function drawCard(who){
 
 //-------------------------Adding cards to the game if taking from the pile-------------
 function checkCoverCards(){
-    console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
+    //console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
     if(coverMainCards.length==0){
         coverMainCards = shuffleCards(uncoverMainCards)
         uncoverMainCards.splice(0, uncoverMainCards.length-1)
@@ -236,7 +236,7 @@ function shuffleCards(deckToShuffle) {
 function selectingCard(){
     let wybranaKarta = this.getAttribute('alt')
 
-    if(whoNow.innerText==human && checkCard(wybranaKarta)){
+    if(whoNow.innerText==PLAYERS.HUMAN && checkCard(wybranaKarta)){
         uncoverMainCards.push(wybranaKarta)
 
         coverMainCard.setAttribute("src", "/storage/cards/"+wybranaKarta+".png")
@@ -255,14 +255,14 @@ function selectingCard(){
             bot()
         }, 2000)
     }
-    else if(whoNow.innerText!=human) alert("Nie twój ruch")
+    else if(whoNow.innerText!=PLAYERS.HUMAN) alert("Nie twój ruch")
     else alert("Tą kartą nie można zagrać")
 }
 
 //-------------------------Obsługa boty----------------------------
 function bot(){
     let who = whoNow.innerText
-    if(who==bot1) ruchBota(bot1Cards.children)
+    if(who==PLAYERS.BOT) ruchBota(bot1Cards.children)
 }
 
 //------------------------------Bot movement-------------------------------------
@@ -270,9 +270,9 @@ function ruchBota(cards){
     let playedCard
     let isCard=false
     if(mode == "Heurystyczne") playedCard = heurystyczne(cards)
-    if(mode == "Heurystyczne") playedCard = mcts(cards)
+    if(mode == "MCTS") playedCard = mcts(cards)
 
-    console.log(playedCard)
+    //console.log(playedCard)
 
     if(playedCard != null){
         checkCard(playedCard.getAttribute("alt"))
@@ -341,7 +341,22 @@ function helpConditionHeurystyczne(sing){
 
 //------------------Monte Carlo Tree Search-----------------------
 function mcts(cardPlayed) {
+    let cardPlayedAlt = [];
+    let youCardsdAlt = [];
+    for (let card of cardPlayed) {
+        cardPlayedAlt.push(card.alt);
+    }
+    for (let card of youCards.children) {
+        youCardsdAlt.push(card.alt);
+    }
 
+    let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma);
+    let bestMove = runMCTS(initialState, 1000); // 1000 iterations
+    console.log(bestMove)
+    if(bestMove == "add"){
+        return null
+    }
+    else return document.querySelector(`img[alt="${bestMove}"]`);
 }
 
 //-------------------Checks if this card can be played----------------
@@ -422,13 +437,13 @@ function checkWin(who){
 
     let cards
     switch(who){
-        case human:
+        case PLAYERS.HUMAN:
             cards = youCards.children
-            whoNow.innerText=bot1
+            whoNow.innerText=PLAYERS.BOT
             break;
-        case bot1:
+        case PLAYERS.BOT:
             cards = bot1Cards.children
-            whoNow.innerText=human
+            whoNow.innerText=PLAYERS.HUMAN
             break;
     }
 
@@ -438,7 +453,7 @@ function checkWin(who){
 //-------------------What happens if someone wins?-----------------------------
 function win(who){
     let text
-    if(who==human) text = "Wygrałeś"
+    if(who==PLAYERS.HUMAN) text = "Wygrałeś"
     else text = "Wygrał " + who
     let whoWinParagraph = document.createElement("p")
     whoWinParagraph.id="whoWin"
@@ -469,4 +484,188 @@ function addForHistory(card){
     card.style = ""
     card.classList.remove("removeCard")
     historyGame.insertBefore(card, historyGame.firstChild)
+}
+
+
+class GameState {
+    constructor(botCards, humanCards, coverCards, uncoverCards, player = PLAYERS.HUMAN, suma=0) {
+        this.botCards = botCards
+        this.humanCards = humanCards
+        this.coverCards = coverCards
+        this.uncoverCards = uncoverCards
+        this.player = player
+        this.suma = suma
+    }
+
+    // Generate possible moves based on the game rules
+    getPossibleMoves() {
+        let possibleCard = []
+        let unCard = this.uncoverCards[0]
+        console.log(unCard)
+        let uncoverCardSign = unCard.substring(0, 2)
+        let uncoverCardFigure = unCard.substring(3, unCard.length)
+        this.botCards.forEach(card => {
+            let cardSign = card.substring(0,2)
+            let cardFigure = card.substring(3, card.length)
+
+            if((cardSign==uncoverCardSign || cardFigure==uncoverCardFigure)){
+                possibleCard.push(card)
+            }
+        })
+        if(this.coverCards.length>0){
+            possibleCard.push("add")
+        }
+        return possibleCard
+    }
+
+    // Apply a move and return the new state
+    makeMove(move) {
+        let newBotCards = this.botCards
+        let newHumanCards = this.humanCards
+        let newCoverCards = this.coverCards
+        let newUncoverCards = this.uncoverCards
+        let newSuma = this.suma
+        if(this.player == PLAYERS.BOT){
+            if(move == "add"){
+                for(let i=1; i<=newSuma; i++) newBotCards.push(newCoverCards.pop())
+                newSuma = 0
+            }
+            else{
+                newUncoverCards.push(move)
+                newBotCards.splice(newBotCards.indexOf(move), 1);
+            }
+        }
+        if(this.player == PLAYERS.HUMAN){
+            if(move == "add"){
+                for(let i=0; i<=newSuma; i++) newHumanCards.push(newCoverCards.pop())
+                newSuma = 0
+            }
+            else{
+                newUncoverCards.push(move)
+                newHumanCards.splice(newHumanCards.indexOf(move), 1)
+            }
+        }
+        if(move != "add")
+        {
+            let sing = move.substring(0, 2)
+            switch(sing){
+                case "02":
+                    newSuma+=2
+                    break
+                case "03":
+                    newSuma+=3
+                    break
+                case "0Q":
+                    newSuma=0
+                    break
+                case "0J":
+                    if(newSuma<=5){
+                        newSuma=0;
+                    }
+                    else{
+                        newSuma-=5
+                    }
+                    break
+                case "0K":
+                    newSuma+=5
+                    break
+            }
+        }
+        else{
+            if(newCoverCards.length==0){
+                newCoverCards = shuffleCards(newUncoverCards)
+                newUncoverCards.splice(0, newUncoverCards.length-1)
+                newCoverCards.splice(newCoverCards.indexOf(newUncoverCards[0]), 1)
+            }
+        }
+
+        let newPlayer = this.player === PLAYERS.HUMAN ? PLAYERS.BOT : PLAYERS.HUMAN
+        return new GameState(newBotCards, newHumanCards, newCoverCards, newUncoverCards, newPlayer, newSuma);
+    }
+
+    // Check if the game has ended
+    isGameOver() {
+        if(this.humanCards.length == 0 || this.botCards.length == 0 || this.coverCards.length == 0) return true
+        else return false
+    }
+}
+
+class MCTSNode {
+    constructor(parent = null, move = null, state) {
+        this.parent = parent;
+        this.move = move;
+        this.state = state;
+        this.children = [];
+        this.wins = 0;
+        this.visits = 0;
+    }
+
+    // Select a child node using the UCT (Upper Confidence Bound applied to Trees) formula
+    selectChild() {
+        let selectedChild;
+        let bestValue = -Infinity;
+        this.children.forEach(child => {
+            let uctValue =
+                child.wins / child.visits +
+                Math.sqrt(2) * Math.sqrt(Math.log(this.visits) / child.visits);
+            if (uctValue > bestValue) {
+                selectedChild = child;
+                bestValue = uctValue;
+            }
+        });
+        return selectedChild;
+    }
+
+    // Add a child node
+    addChild(move, state) {
+        const child = new MCTSNode(this, move, state);
+        this.children.push(child);
+        return child;
+    }
+
+    // Update this node after a simulation
+    update(result) {
+        this.visits++;
+        this.wins += result;
+    }
+}
+
+function runMCTS(rootState, iterations) {
+    const rootNode = new MCTSNode(null, null, rootState);
+
+    for (let i = 0; i < iterations; i++) {
+        let node = rootNode;
+        let state = rootState; // Deep copy might be needed
+
+        // Selection
+        while (node.children.length && node.state.getPossibleMoves().length) {
+            node = node.selectChild();
+            state = state.makeMove(node.move);
+        }
+
+        // Expansion
+        if (node.state.getPossibleMoves().length) {
+            const moves = node.state.getPossibleMoves();
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = state.makeMove(move);
+            node = node.addChild(move, state);
+        }
+
+        // Simulation
+        while (!state.isGameOver()) {
+            const moves = state.getPossibleMoves();
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = state.makeMove(move);
+        }
+
+        // Backpropagation
+        let result = state.winner === PLAYERS.BOT ? 1 : 0;
+        while (node) {
+            node.update(result);
+            node = node.parent;
+        }
+    }
+
+    // Choose the best move at the root
+    return rootNode.selectChild().move;
 }
