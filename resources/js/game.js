@@ -28,6 +28,7 @@ let whoNow = document.getElementById("whoNow")
 //------------------Game launch and launch support----------------------------------------------
 let mode
 let firstGame = true
+let canContinue = true
 let newGame = document.getElementById("start")
 newGame.addEventListener("click", start)
 
@@ -85,15 +86,18 @@ function start(){
     for(let card of youCards.children){
         card.addEventListener("click", selectingCard)
     }
-
+    canContinue = true
     mode = document.querySelector('input[name="tryb"]:checked').value
 }
 
 //-------------Adding a card for grasz after clicking face down--------------------
 function drawUncoverMain(){
     if(whoNow.innerText==PLAYERS.HUMAN){
-        for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
-        drawCard(PLAYERS.HUMAN)
+        if(canContinue){
+            for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
+            drawCard(PLAYERS.HUMAN)
+        }
+
 
         suma = 0
         sumaSpan.innerText = ""
@@ -139,10 +143,13 @@ function drawCard(who){
     if(coverMainCards.length==0 && uncoverMainCards.length==1){
         let whoWin = document.createElement("p")
         whoWin.id="whoWin"
-        if(youCards.length > bot1Cards.length) whoWin.innerText="Koniec gry wygrał bot"
-        if(youCards.length < bot1Cards.length) whoWin.innerText="Koniec gry wygrałeś ty"
+        if(youCards.children.length > bot1Cards.children.length) whoWin.textContent="Koniec gry wygrał bot"
+        if(youCards.children.length < bot1Cards.children.length) whoWin.textContent="Koniec gry wygrałeś ty"
         document.querySelector(".centerBoard").insertBefore(whoWin, document.querySelector(".centerBoard p"))
-        resetGames()
+        setTimeout(function(){
+            resetGames()
+        }, 600)
+        canContinue = false
     }
 }
 
@@ -356,9 +363,10 @@ function changeCard(isCard, selectedCard){
         addForHistory(selectedCard)
     }
     else{
-        for(let i=1; i<suma; i++) drawCard(whoNow.innerText)
-        drawCard(whoNow.innerText)
-
+        if(canContinue){
+            for(let i=1; i<suma; i++) drawCard(whoNow.innerText)
+            drawCard(whoNow.innerText)
+        }
         suma=0;
         sumaSpan.innerText=""
 
