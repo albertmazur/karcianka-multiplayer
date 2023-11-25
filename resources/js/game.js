@@ -163,7 +163,7 @@ function checkCoverCards(){
 }
 
 //-----------------------Shuffle the cards------------------------------------
-function shuffleCards(deckToShuffle) {
+export function shuffleCards(deckToShuffle) {
     let n=deckToShuffle.length;
     let k=n;
     let numbers = new Array(n);

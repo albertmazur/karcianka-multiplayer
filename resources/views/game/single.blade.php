@@ -27,17 +27,22 @@
         </div>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col items-center gap-3 m-6 p-6">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col items-center gap-4 m-6 p-3">
         <p class="" >Tryby gry</p>
-        <div class="flex justify-center gap-3">
-            <div class="flex items-center">
-                <input checked id="default-radio-1" type="radio" value="Heurystyczne" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                <x-input-label for="default-radio-1" class="ms-2">Heurystyczne</x-input-label>
-            </div>
+        <div class="flex flex-row">
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center">
+                    <input checked id="default-radio-1" type="radio" value="Heurystyczne" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+                    <x-input-label for="default-radio-1" class="ms-2">Heurystyczne</x-input-label>
+                </div>
 
-            <div class="flex items-center">
-                <input id="default-radio-2" type="radio" value="MCTS" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                <x-input-label for="default-radio-2" class="ms-2">MCTS</x-input-label>
+                <div class="flex items-center gap-3">
+                    <div class="flex">
+                        <input id="default-radio-2" type="radio" value="MCTS" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+                        <x-input-label for="default-radio-2" class="ms-2">MCTS</x-input-label>
+                    </div>
+                    <x-text-input id="mctsIteration" type="number" value="1000" min='1' step="1"></x-text-inpu>
+                </div>
             </div>
         </div>
         <x-primary-button id="start" class="w-28 justify-center">Start</x-primary-button>

@@ -1,3 +1,4 @@
+import {shuffleCards} from "./game.js"
 const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" });
 
 export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
@@ -12,12 +13,55 @@ export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLA
     }
 
     let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma);
-    let bestMove = runMCTS(initialState, 1000); // 1000 iterations
+    let mctsIteration = document.getElementById("mctsIteration").value
+    let bestMove = runMCTS(initialState, mctsIteration);
+
     if(bestMove == "add"){
         return null
     }
     else return document.querySelector(`img[alt="${bestMove}"]`);
 }
+
+function runMCTS(rootState, iterations) {
+    const rootNode = new MCTSNode(null, null, rootState);
+
+    for (let i = 0; i < iterations; i++) {
+        let node = rootNode;
+        let state = rootState; // Deep copy might be needed
+
+        // Selection
+        while (node.children.length && node.state.getPossibleMoves().length) {
+            node = node.selectChild();
+            state = state.makeMove(node.move);
+        }
+
+        // Expansion
+        if (node.state.getPossibleMoves().length) {
+            const moves = node.state.getPossibleMoves();
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = state.makeMove(move);
+            node = node.addChild(move, state);
+        }
+
+        // Simulation
+        while (!state.isGameOver()) {
+            const moves = state.getPossibleMoves();
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = state.makeMove(move);
+        }
+
+        // Backpropagation
+        let result = state.winner === PLAYERS.BOT ? 1 : 0;
+        while (node) {
+            node.update(result);
+            node = node.parent;
+        }
+    }
+
+    // Choose the best move at the root
+    return rootNode.selectChild().move;
+}
+
 
 class GameState {
     constructor(botCards, humanCards, coverCards, uncoverCards, player = PLAYERS.HUMAN, suma=0) {
@@ -170,44 +214,4 @@ class MCTSNode {
         this.visits++;
         this.wins += result;
     }
-}
-
-function runMCTS(rootState, iterations) {
-    const rootNode = new MCTSNode(null, null, rootState);
-
-    for (let i = 0; i < iterations; i++) {
-        let node = rootNode;
-        let state = rootState; // Deep copy might be needed
-
-        // Selection
-        while (node.children.length && node.state.getPossibleMoves().length) {
-            node = node.selectChild();
-            state = state.makeMove(node.move);
-        }
-
-        // Expansion
-        if (node.state.getPossibleMoves().length) {
-            const moves = node.state.getPossibleMoves();
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            state = state.makeMove(move);
-            node = node.addChild(move, state);
-        }
-
-        // Simulation
-        while (!state.isGameOver()) {
-            const moves = state.getPossibleMoves();
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            state = state.makeMove(move);
-        }
-
-        // Backpropagation
-        let result = state.winner === PLAYERS.BOT ? 1 : 0;
-        while (node) {
-            node.update(result);
-            node = node.parent;
-        }
-    }
-
-    // Choose the best move at the root
-    return rootNode.selectChild().move;
 }
