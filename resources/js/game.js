@@ -70,7 +70,7 @@ function start(){
     }
 
 
-    let sing = coverMainCards[0].substring(0,2)
+    let sing = coverMainCards.at(0).substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
 
     uncoverMainCards.unshift(coverMainCards.shift())
@@ -139,7 +139,6 @@ function drawCard(who){
 
     checkCoverCards()
 
-    console.log("zakryte: "+coverMainCards.length+" odkryte: "+uncoverMainCards.length)
     if(coverMainCards.length==0 && uncoverMainCards.length==1){
         let whoWin = document.createElement("p")
         whoWin.id="whoWin"
@@ -224,8 +223,6 @@ function ruchBota(cards){
     if(mode == "Heurystyczne") playedCard = heurystyczne(cards)
     if(mode == "MCTS") playedCard = mcts(cards)
 
-    //console.log(playedCard)
-
     if(playedCard != null){
         checkCard(playedCard.getAttribute("alt"))
         isCard=true
@@ -294,9 +291,9 @@ function mcts(cardPlayed) {
     for (let card of youCards.children) {
         youCardsdAlt.unshift(card.alt);
     }
+
     let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma);
     let bestMove = runMCTS(initialState, 1000); // 1000 iterations
-    //console.log(bestMove)
     if(bestMove == "add"){
         return null
     }
@@ -432,10 +429,10 @@ function addForHistory(card){
 
 class GameState {
     constructor(botCards, humanCards, coverCards, uncoverCards, player = PLAYERS.HUMAN, suma=0) {
-        this.botCards = botCards
-        this.humanCards = humanCards
-        this.coverCards = coverCards
-        this.uncoverCards = uncoverCards
+        this.botCards = [...botCards]
+        this.humanCards = [...humanCards]
+        this.coverCards = [...coverCards]
+        this.uncoverCards = [...uncoverCards]
         this.player = player
         this.suma = suma
     }
@@ -443,10 +440,10 @@ class GameState {
     // Generate possible moves based on the game rules
     getPossibleMoves() {
         let possibleCard = []
+
         let unCard = this.uncoverCards[0]
         let uncoverCardSign = unCard.substring(0, 2)
         let uncoverCardFigure = unCard.substring(3, unCard.length)
-        //console.log(this.coverCards)
         this.botCards.forEach(card => {
             let cardSign = card.substring(0,2)
             let cardFigure = card.substring(3, card.length)
@@ -461,19 +458,18 @@ class GameState {
                 cardSign == "0A")possibleCard.unshift(card)
             }
         })
-        if(this.coverCards.length>0){
+        if(this.coverCards.length>0 && this.suma<=this.coverCards.length){
             possibleCard.push("add")
         }
-        console.log(possibleCard)
         return possibleCard
     }
 
     // Apply a move and return the new state
     makeMove(move) {
-        let newBotCards = this.botCards
-        let newHumanCards = this.humanCards
-        let newCoverCards = this.coverCards
-        let newUncoverCards = this.uncoverCards
+        let newBotCards = [...this.botCards]
+        let newHumanCards = [...this.humanCards]
+        let newCoverCards = [...this.coverCards]
+        let newUncoverCards = [...this.uncoverCards]
         let newSuma = this.suma
         if(this.player == PLAYERS.BOT){
             if(move == "add"){
@@ -497,6 +493,9 @@ class GameState {
                 newHumanCards.splice(newHumanCards.indexOf(move), 1)
             }
         }
+
+        console.log("move:" + move)
+        
         if(move != "add")
         {
             let sing = move.substring(0, 2)
@@ -528,9 +527,6 @@ class GameState {
                 newCoverCards = shuffleCards(newUncoverCards)
                 newUncoverCards.splice(0, newUncoverCards.length-1)
                 newCoverCards.pop()
-                //console.log("Jestem")
-                //console.log(newCoverCards)
-                //console.log(newUncoverCards)
             }
         }
 
@@ -540,8 +536,7 @@ class GameState {
 
     // Check if the game has ended
     isGameOver() {
-        if(this.humanCards.length == 0 || this.botCards.length == 0 || (this.coverCards.length == 0 && this.uncoverCards.length==1)){
-            console.log("Jestem")
+        if(this.humanCards.length == 0 || this.botCards.length == 0 || ((this.coverCards.length == 0 && this.uncoverCards.length==1) || (this.coverCards.length<this.suma))){
             return true
         }
         else return false
