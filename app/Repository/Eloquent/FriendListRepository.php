@@ -3,6 +3,7 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\FriendList;
+use App\Models\User;
 use App\Repository\FriendListRepository as Repository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -41,13 +42,33 @@ class FriendListRepository implements Repository{
         $user->delete();
     }
 
-    public function myFriends(int $idUser): Collection{
-        return $this->friendListModel->where('user_id', '=', $idUser)->where('accepted', '=', true)->get();
+    public function myFriends(int $idUser): Collection {
+        // Znajdowanie identyfikatorów przyjaciół
+        $friendIds = $this->friendListModel
+            ->where('user_id', $idUser)
+            ->where('accepted', true)
+            ->pluck('user_friend_id')
+            ->merge(
+                $this->friendListModel
+                    ->where('user_friend_id', $idUser)
+                    ->where('accepted', true)
+                    ->pluck('user_id')
+            )
+            ->unique();
+
+        // Zwracanie obiektów użytkowników
+        return User::whereIn('id', $friendIds)->get();
     }
 
+
+
     public function remove(int $idUser){
-        $friend =$this->friendListModel->find($idUser);
+        $friend =$this->friendListModel->where("user_id", '=', $idUser)->first();
         $friend->delete();
+    }
+
+    public function get(int $idUser): FriendList{
+        return $this->friendListModel->where("user_id", '=', $idUser)->first();
     }
 
     public function listInvitation(int $idAuth): Collection{
