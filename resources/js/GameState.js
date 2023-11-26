@@ -1,5 +1,4 @@
-import {shuffleCards} from "./game.js"
-const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" });
+import {shuffleCards, PLAYERS} from './helper.js'
 
 export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
     PLAYERS = PLAYERS

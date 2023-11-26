@@ -1,7 +1,6 @@
 import { mcts } from './GameState.js';
 import { heurystyczne } from './heurystyczne.js';
-
-const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" });
+import {shuffleCards, PLAYERS} from './helper.js'
 
 //-----------------Card names--------------------------------
 const mainCards = ["02_Trefl", "03_Trefl", "04_Trefl", "05_Trefl", "06_Trefl", "07_Trefl", "08_Trefl", "09_Trefl", "10_Trefl", "0J_Trefl", "0Q_Trefl", "0K_Trefl", "0A_Trefl", "02_Pik", "03_Pik", "04_Pik", "05_Pik", "06_Pik", "07_Pik", "08_Pik", "09_Pik", "10_Pik", "0J_Pik", "0Q_Pik", "0K_Pik", "0A_Pik", "02_Kier", "03_Kier", "04_Kier", "05_Kier", "06_Kier", "07_Kier", "08_Kier", "09_Kier", "10_Kier", "0J_Kier", "0Q_Kier", "0K_Kier", "0A_Kier", "02_Karo", "03_Karo", "04_Karo", "05_Karo", "06_Karo", "07_Karo", "08_Karo", "09_Karo", "10_Karo", "0J_Karo", "0Q_Karo", "0K_Karo", "0A_Karo"];
@@ -93,6 +92,8 @@ function start(){
 
 //-------------Adding a card for grasz after clicking face down--------------------
 function drawUncoverMain(){
+    console.log(whoNow.innerText)
+    console.log(PLAYERS.HUMAN)
     if(whoNow.innerText==PLAYERS.HUMAN){
         if(canContinue){
             for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
@@ -163,27 +164,7 @@ function checkCoverCards(){
 }
 
 //-----------------------Shuffle the cards------------------------------------
-export function shuffleCards(deckToShuffle) {
-    let n=deckToShuffle.length;
-    let k=n;
-    let numbers = new Array(n);
-    let coverCards = []
 
-    for (let i=0; i<n; i++) {
-        numbers[i] = i + 1
-    }
-
-    for (let i=0; i<k; i++) {
-        let r = Math.floor(Math.random()*n)
-
-        coverCards[i]=deckToShuffle[numbers[r]-1]
-
-        numbers[r] = numbers[n - 1]
-        n--
-    }
-
-    return coverCards
-}
 
 //---------------------------Function called after selecting a card-----------------------------
 function selectingCard(){
