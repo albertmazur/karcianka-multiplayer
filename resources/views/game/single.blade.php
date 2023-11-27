@@ -1,7 +1,7 @@
 <x-app-layout>
 <div class="game">
     <div class="flex flex-col-reverse sm:flex-row sm:m-2">
-        <div class="bg-white flex flex-col sm:items-stretch m-6 h-56 sm:h-[90vh] sm:m-3 sm:w-48">
+        <div class="bg-white flex flex-col sm:items-stretch m-6 h-56 lg:h-[90vh] sm:h-[100vh] sm:m-3 sm:w-48">
             <p class="my-5">{{__("game.history")}}</p>
             <div id="history" class="overflow-auto flex flex-row sm:flex-col gap-4 px-8">
             </div>
