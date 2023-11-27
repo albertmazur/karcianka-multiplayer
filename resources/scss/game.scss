@@ -18,7 +18,7 @@
         margin: 10px;
         padding: 0;
         border-radius: 100px;
-        min-height: 900px;
+        max-height: 90vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -152,10 +152,6 @@
 
         .cardsHuman{
             min-height: 150px;
-        }
-
-        .board{
-            min-height: 680px;
         }
 
         .centerBoard{
