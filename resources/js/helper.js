@@ -1,9 +1,9 @@
-export const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" });
+export const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" })
 
 export function shuffleCards(deckToShuffle) {
-    let n=deckToShuffle.length;
-    let k=n;
-    let numbers = new Array(n);
+    let n=deckToShuffle.length
+    let k=n
+    let numbers = new Array(n)
     let coverCards = []
 
     for (let i=0; i<n; i++) {
