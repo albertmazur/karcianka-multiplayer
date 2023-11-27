@@ -23,6 +23,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: stretch;
+        gap: 20px;
     }
 
     .board p{
@@ -46,14 +47,9 @@
         /*Background pattern from sublepatterns.com*/
         align-self: center;
         box-sizing: border-box;
-        padding:10px 40px;
+        padding: 10px 40px;
         border-radius: 20px;
         min-height: 280px;
-    }
-
-    .bot1{
-        flex: 1;
-        min-height: 190px;
     }
 
     .cardsHuman img, .cover{
@@ -69,11 +65,6 @@
     .bot p, .you p{
         font-size: 18px;
         text-transform: uppercase;
-    }
-
-    .human{
-        flex: 1;
-        min-height: 220px;
     }
 
     #whoWin{
@@ -147,44 +138,45 @@
         opacity: 1 !important;
         transition:  0.7s opacity ease-in-out;
     }
-}
 
-@media screen and (max-width: 1500px) {
-    #cardsBot1 img{
-        max-width: 75px;
+    @media screen and (max-width: 1500px) {
+        #cardsBot1 img{
+            max-width: 75px;
+        }
+    }
+
+    @media screen and (max-width: 700px) {
+        .bot1{
+            min-height: 130px;
+        }
+
+        .cardsHuman{
+            min-height: 150px;
+        }
+
+        .board{
+            min-height: 680px;
+        }
+
+        .centerBoard{
+            min-height: 210px
+        }
+
+        #whoNow{
+            font-size: 22px;
+        }
+
+        .board .center .centerBoard{
+            padding: 5px 5px 0px 5px;
+        }
+
+        #cardsBot1 img, .centerBoard img{
+            max-width: 50px;
+        }
+
+        .cardsHuman img, .centerBoard img{
+            max-width: 60px;
+        }
     }
 }
 
-@media screen and (max-width: 700px) {
-    .bot1{
-        min-height: 130px;
-    }
-
-    .cardsHuman{
-        min-height: 150px;
-    }
-
-    .board{
-        min-height: 680px;
-    }
-
-    .centerBoard{
-        min-height: 210px
-    }
-
-    #whoNow{
-        font-size: 22px;
-    }
-
-    .board .center .centerBoard{
-        padding: 5px 5px 0px 5px;
-    }
-
-    #cardsBot1 img, .centerBoard img{
-        max-width: 50px;
-    }
-
-    .cardsHuman img, .centerBoard img{
-        max-width: 60px;
-    }
-}

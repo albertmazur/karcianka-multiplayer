@@ -21,7 +21,7 @@
                 </div>
             </div>
                 <div class="human">
-                    <p>{{Auth::user()->name}}</p>
+                    <p>{{Auth::user()->nick}}</p>
                     <div class="cardsHuman"></div>
                 </div>
         </div>

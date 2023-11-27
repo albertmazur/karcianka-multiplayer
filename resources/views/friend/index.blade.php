@@ -8,7 +8,7 @@
                         @foreach ($friends as $friend)
                             <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg">
                                 <div class="flex items-center gap-3 justify-between w-full">
-                                    <p>{{$friend->name}}<p>
+                                    <p>{{$friend->nick}}<p>
                                         <form method="POST" action="{{route("friend.remove")}}">
                                             @method('DELETE')
                                             @csrf
@@ -42,7 +42,7 @@
                     @foreach ($invitations as $invitation)
                         <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg">
                             <div class="flex items-center gap-3 justify-between w-full">
-                                <p>{{$invitation->userFriend->name}}<p>
+                                <p>{{$invitation->userFriend->nick}}<p>
                                     <form method="POST" action="{{route("friend.accepted")}}">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$invitation->userFriend->id}}">

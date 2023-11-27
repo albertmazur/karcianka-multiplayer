@@ -72,43 +72,42 @@ function start(){
 
     let sing = coverMainCards.at(0).substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
+    else{
+        uncoverMainCards.unshift(coverMainCards.shift())
+        uncoverMainCardImg.setAttribute("src", "/storage/cards/"+uncoverMainCards.at(0)+".png")
+        uncoverMainCardImg.setAttribute("alt", uncoverMainCards.at(0))
 
-    uncoverMainCards.unshift(coverMainCards.shift())
-    uncoverMainCardImg.setAttribute("src", "/storage/cards/"+uncoverMainCards.at(0)+".png")
-    uncoverMainCardImg.setAttribute("alt", uncoverMainCards.at(0))
+        let history = document.getElementById("history")
+        while (history.firstChild) {
+            history.removeChild(history.firstChild);
+        }
+        history.appendChild(uncoverMainCardImg.cloneNode(true))
 
-    let history = document.getElementById("history")
-    while (history.firstChild) {
-        history.removeChild(history.firstChild);
+        for(let card of youCards.children){
+            card.addEventListener("click", selectingCard)
+        }
+        canContinue = true
+        mode = document.querySelector('input[name="tryb"]:checked').value
     }
-    history.appendChild(uncoverMainCardImg.cloneNode(true))
 
-    for(let card of youCards.children){
-        card.addEventListener("click", selectingCard)
-    }
-    canContinue = true
-    mode = document.querySelector('input[name="tryb"]:checked').value
 }
 
 //-------------Adding a card for grasz after clicking face down--------------------
 function drawUncoverMain(){
-    console.log(whoNow.innerText)
-    console.log(PLAYERS.HUMAN)
     if(whoNow.innerText==PLAYERS.HUMAN){
         if(canContinue){
             for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
             drawCard(PLAYERS.HUMAN)
         }
 
-
         suma = 0
         sumaSpan.innerText = ""
 
         whoNow.innerText=PLAYERS.BOT
 
-         setTimeout(function (){
-             bot()
-           }, 2000)
+        setTimeout(function (){
+            bot()
+        }, 2000)
     }
     else alert("Nie twój ruch nie możesz brać karty")
 }
@@ -162,9 +161,6 @@ function checkCoverCards(){
         coverMainCards.splice(coverMainCards.indexOf(uncoverMainCards[0]), 1)
     }
 }
-
-//-----------------------Shuffle the cards------------------------------------
-
 
 //---------------------------Function called after selecting a card-----------------------------
 function selectingCard(){
