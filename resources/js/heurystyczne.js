@@ -1,4 +1,4 @@
-export function heurystyczne(cards, uncoverMainCardImg, youCardsCount){
+export function heurystyczne(cards, uncoverMainCardImg, youCardsCount, suma){
     let cardsSpecial = []
     let cardsNotSpecial = []
 
@@ -44,6 +44,5 @@ export function heurystyczne(cards, uncoverMainCardImg, youCardsCount){
     if(cardsSpecial.length>0){
         return cardsSpecial.shift()
     }
-
     return null
 }

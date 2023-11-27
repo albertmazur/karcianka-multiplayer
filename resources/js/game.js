@@ -198,7 +198,7 @@ function bot(){
 function ruchBota(cards){
     let playedCard
     let isCard=false
-    if(mode == "Heurystyczne") playedCard = heurystyczne(cards, uncoverMainCardImg, youCards.length)
+    if(mode == "Heurystyczne") playedCard = heurystyczne(cards, uncoverMainCardImg, youCards.length, suma)
     if(mode == "MCTS") playedCard = mcts(cards, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma)
 
     if(playedCard != null){
