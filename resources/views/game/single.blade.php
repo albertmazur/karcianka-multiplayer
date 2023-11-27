@@ -66,6 +66,7 @@
 
     </script>
     <style>
+        /*Background pattern from sublepatterns.com*/
         .board{
             background-image: url({{asset("storage/background/pool_table_green.png")}})
         }
