@@ -2,65 +2,64 @@ import {shuffleCards, PLAYERS} from './helper.js'
 
 export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
     PLAYERS = PLAYERS
-    let cardPlayedAlt = [];
-    let youCardsdAlt = [];
+    let cardPlayedAlt = []
+    let youCardsdAlt = []
+
     for (let card of cardPlayed) {
-        cardPlayedAlt.unshift(card.alt);
+        cardPlayedAlt.unshift(card.alt)
     }
+
     for (let card of youCards.children) {
-        youCardsdAlt.unshift(card.alt);
+        youCardsdAlt.unshift(card.alt)
     }
 
-    let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma);
+    let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
     let mctsIteration = document.getElementById("mctsIteration").value
-    let bestMove = runMCTS(initialState, mctsIteration);
+    let bestMove = runMCTS(initialState, mctsIteration)
 
-    if(bestMove == "add"){
-        return null
-    }
-    else return document.querySelector(`img[alt="${bestMove}"]`);
+    if(bestMove == "add") return null
+    else return document.querySelector(`img[alt="${bestMove}"]`)
 }
 
 function runMCTS(rootState, iterations) {
-    const rootNode = new MCTSNode(null, null, rootState);
+    const rootNode = new MCTSNode(null, null, rootState)
 
-    for (let i = 0; i < iterations; i++) {
-        let node = rootNode;
-        let state = rootState; // Deep copy might be needed
+    for (let i = 0; i<iterations; i++) {
+        let node = rootNode
+        let state = rootState
 
         // Selection
         while (node.children.length && node.state.getPossibleMoves().length) {
-            node = node.selectChild();
-            state = state.makeMove(node.move);
+            node = node.selectChild()
+            state = state.makeMove(node.move)
         }
 
         // Expansion
         if (node.state.getPossibleMoves().length) {
-            const moves = node.state.getPossibleMoves();
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            state = state.makeMove(move);
-            node = node.addChild(move, state);
+            const moves = node.state.getPossibleMoves()
+            const move = moves[Math.floor(Math.random() * moves.length)]
+            state = state.makeMove(move)
+            node = node.addChild(move, state)
         }
 
         // Simulation
         while (!state.isGameOver()) {
-            const moves = state.getPossibleMoves();
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            state = state.makeMove(move);
+            const moves = state.getPossibleMoves()
+            const move = moves[Math.floor(Math.random() * moves.length)]
+            state = state.makeMove(move)
         }
 
         // Backpropagation
-        let result = state.winner === PLAYERS.BOT ? 1 : 0;
+        let result = state.getWinner() == PLAYERS.BOT ? 1 : 0
         while (node) {
-            node.update(result);
-            node = node.parent;
+            node.update(result)
+            node = node.parent
         }
     }
 
     // Choose the best move at the root
-    return rootNode.selectChild().move;
+    return rootNode.selectChild().move
 }
-
 
 class GameState {
     constructor(botCards, humanCards, coverCards, uncoverCards, player = PLAYERS.HUMAN, suma=0) {
@@ -75,26 +74,47 @@ class GameState {
     // Generate possible moves based on the game rules
     getPossibleMoves() {
         let possibleCard = []
+        if(this.suma<=this.coverCards.length && this.coverCards.length !=0 ){
+            let unCard = this.uncoverCards.at(0)
+            let uncoverCardSign = unCard.substring(0, 2)
+            let uncoverCardFigure = unCard.substring(3, unCard.length)
+            if(this.player == PLAYERS.BOT){
+                this.botCards.forEach(card => {
+                    let cardSign = card.substring(0,2)
+                    let cardFigure = card.substring(3, card.length)
 
-        let unCard = this.uncoverCards[0]
-        let uncoverCardSign = unCard.substring(0, 2)
-        let uncoverCardFigure = unCard.substring(3, unCard.length)
-        this.botCards.forEach(card => {
-            let cardSign = card.substring(0,2)
-            let cardFigure = card.substring(3, card.length)
-
-            if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
-                if(this.suma == 0) possibleCard.unshift(card)
-                else if(cardSign == "02" ||
-                cardSign == "03" ||
-                cardSign == "0K" ||
-                cardSign == "0J" ||
-                cardSign == "0Q" ||
-                cardSign == "0A")possibleCard.unshift(card)
+                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                        if(this.suma == 0) possibleCard.unshift(card)
+                        else if(cardSign == "02" ||
+                        cardSign == "03" ||
+                        cardSign == "0K" ||
+                        cardSign == "0J" ||
+                        cardSign == "0Q" ||
+                        cardSign == "0A") possibleCard.unshift(card)
+                    }
+                })
             }
-        })
-        if(this.coverCards.length>0 && this.suma<=this.coverCards.length){
-            possibleCard.push("add")
+            if(this.player == PLAYERS.HUMAN){
+                this.humanCards.forEach(card => {
+                    let cardSign = card.substring(0,2)
+                    let cardFigure = card.substring(3, card.length)
+
+                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                        if(this.suma == 0) possibleCard.unshift(card)
+                        else if(cardSign == "02" ||
+                        cardSign == "03" ||
+                        cardSign == "0K" ||
+                        cardSign == "0J" ||
+                        cardSign == "0Q" ||
+                        cardSign == "0A") possibleCard.unshift(card)
+                    }
+                })
+            }
+
+
+            if(this.coverCards.length>0){
+                possibleCard.push("add")
+            }
         }
         return possibleCard
     }
@@ -114,7 +134,7 @@ class GameState {
             }
             else{
                 newUncoverCards.unshift(move)
-                newBotCards.splice(newBotCards.indexOf(move), 1);
+                newBotCards.splice(newBotCards.indexOf(move), 1)
             }
         }
         if(this.player == PLAYERS.HUMAN){
@@ -128,8 +148,7 @@ class GameState {
                 newHumanCards.splice(newHumanCards.indexOf(move), 1)
             }
         }
-        if(move != "add")
-        {
+        if(move != "add"){
             let sing = move.substring(0, 2)
             switch(sing){
                 case "02":
@@ -142,12 +161,8 @@ class GameState {
                     newSuma=0
                     break
                 case "0J":
-                    if(newSuma<=5){
-                        newSuma=0;
-                    }
-                    else{
-                        newSuma-=5
-                    }
+                    if(newSuma<=5)newSuma=0
+                    else newSuma-=5
                     break
                 case "0K":
                     newSuma+=5
@@ -156,14 +171,15 @@ class GameState {
         }
         else{
             if(newCoverCards.length==0){
+                let c = newUncoverCards.shift()
                 newCoverCards = shuffleCards(newUncoverCards)
-                newUncoverCards.splice(0, newUncoverCards.length-1)
-                newCoverCards.pop()
+                newUncoverCards.splice(0, newUncoverCards.length)
+                newUncoverCards.unshift(c)
             }
         }
 
         let newPlayer = this.player === PLAYERS.HUMAN ? PLAYERS.BOT : PLAYERS.HUMAN
-        return new GameState(newBotCards, newHumanCards, newCoverCards, newUncoverCards, newPlayer, newSuma);
+        return new GameState(newBotCards, newHumanCards, newCoverCards, newUncoverCards, newPlayer, newSuma)
     }
 
     // Check if the game has ended
@@ -173,44 +189,51 @@ class GameState {
         }
         else return false
     }
+
+    getWinner(){
+        let countHumanCards = this.humanCards.length
+        let countBotCards = this.botCards.length
+        if(countHumanCards == 0 || countHumanCards<countBotCards) return PLAYERS.HUMAN
+        if(countBotCards == 0 || countBotCards<countHumanCards) return PLAYERS.BOT
+    }
 }
 
 class MCTSNode {
     constructor(parent = null, move = null, state) {
-        this.parent = parent;
-        this.move = move;
-        this.state = state;
-        this.children = [];
-        this.wins = 0;
-        this.visits = 0;
+        this.parent = parent
+        this.move = move
+        this.state = state
+        this.children = []
+        this.wins = 0
+        this.visits = 0
     }
 
     // Select a child node using the UCT (Upper Confidence Bound applied to Trees) formula
     selectChild() {
-        let selectedChild;
-        let bestValue = -Infinity;
+        let selectedChild
+        let bestValue = -Infinity
         this.children.forEach(child => {
             let uctValue =
                 child.wins / child.visits +
-                Math.sqrt(2) * Math.sqrt(Math.log(this.visits) / child.visits);
+                Math.sqrt(2) * Math.sqrt(Math.log(this.visits) / child.visits)
             if (uctValue > bestValue) {
-                selectedChild = child;
-                bestValue = uctValue;
+                selectedChild = child
+                bestValue = uctValue
             }
-        });
-        return selectedChild;
+        })
+        return selectedChild
     }
 
     // Add a child node
     addChild(move, state) {
-        const child = new MCTSNode(this, move, state);
-        this.children.push(child);
-        return child;
+        const child = new MCTSNode(this, move, state)
+        this.children.push(child)
+        return child
     }
 
     // Update this node after a simulation
     update(result) {
-        this.visits++;
-        this.wins += result;
+        this.visits++
+        this.wins += result
     }
 }

@@ -1,9 +1,9 @@
-import { mcts } from './GameState.js';
-import { heurystyczne } from './heurystyczne.js';
+import { mcts } from './GameState.js'
+import { heurystyczne } from './heurystyczne.js'
 import {shuffleCards, PLAYERS} from './helper.js'
 
 //-----------------Card names--------------------------------
-const mainCards = ["02_Trefl", "03_Trefl", "04_Trefl", "05_Trefl", "06_Trefl", "07_Trefl", "08_Trefl", "09_Trefl", "10_Trefl", "0J_Trefl", "0Q_Trefl", "0K_Trefl", "0A_Trefl", "02_Pik", "03_Pik", "04_Pik", "05_Pik", "06_Pik", "07_Pik", "08_Pik", "09_Pik", "10_Pik", "0J_Pik", "0Q_Pik", "0K_Pik", "0A_Pik", "02_Kier", "03_Kier", "04_Kier", "05_Kier", "06_Kier", "07_Kier", "08_Kier", "09_Kier", "10_Kier", "0J_Kier", "0Q_Kier", "0K_Kier", "0A_Kier", "02_Karo", "03_Karo", "04_Karo", "05_Karo", "06_Karo", "07_Karo", "08_Karo", "09_Karo", "10_Karo", "0J_Karo", "0Q_Karo", "0K_Karo", "0A_Karo"];
+const mainCards = ["02_Trefl", "03_Trefl", "04_Trefl", "05_Trefl", "06_Trefl", "07_Trefl", "08_Trefl", "09_Trefl", "10_Trefl", "0J_Trefl", "0Q_Trefl", "0K_Trefl", "0A_Trefl", "02_Pik", "03_Pik", "04_Pik", "05_Pik", "06_Pik", "07_Pik", "08_Pik", "09_Pik", "10_Pik", "0J_Pik", "0Q_Pik", "0K_Pik", "0A_Pik", "02_Kier", "03_Kier", "04_Kier", "05_Kier", "06_Kier", "07_Kier", "08_Kier", "09_Kier", "10_Kier", "0J_Kier", "0Q_Kier", "0K_Kier", "0A_Kier", "02_Karo", "03_Karo", "04_Karo", "05_Karo", "06_Karo", "07_Karo", "08_Karo", "09_Karo", "10_Karo", "0J_Karo", "0Q_Karo", "0K_Karo", "0A_Karo"]
 let mainCardsImg = []
 
 //--------------------Stacks of cards--------------------
@@ -39,7 +39,7 @@ function start(){
             let img = document.createElement("img")
             img.setAttribute("alt", mainCards[i])
             img.setAttribute("src", '/storage/cards/'+mainCards[i]+'.png')
-            mainCardsImg.unshift(img);
+            mainCardsImg.unshift(img)
         }
     }
 
@@ -59,16 +59,15 @@ function start(){
 
     coverMainCards = shuffleCards(mainCards)
 
-    for(let i=0; i<10;i++){
+    for(let i=0; i<10; i++){
         let img = creatCard(coverMainCards.shift())
 
         if(i%2==0) youCards.appendChild(img)
         if(i%2==1){
-            //img.setAttribute("src", '/storage/cards/background_card.png');
+            //img.setAttribute("src", '/storage/cards/background_card.png')
             bot1Cards.appendChild(img)
         }
     }
-
 
     let sing = coverMainCards.at(0).substring(0,2)
     if(sing=="02" || sing=="03" || sing=="0J" || sing=="0Q" || sing=="0K" || sing=="0A") start()
@@ -79,7 +78,7 @@ function start(){
 
         let history = document.getElementById("history")
         while (history.firstChild) {
-            history.removeChild(history.firstChild);
+            history.removeChild(history.firstChild)
         }
         history.appendChild(uncoverMainCardImg.cloneNode(true))
 
@@ -89,14 +88,13 @@ function start(){
         canContinue = true
         mode = document.querySelector('input[name="tryb"]:checked').value
     }
-
 }
 
 //-------------Adding a card for grasz after clicking face down--------------------
 function drawUncoverMain(){
     if(whoNow.innerText==PLAYERS.HUMAN){
         if(canContinue){
-            for(let i=1;i<suma;i++) drawCard(PLAYERS.HUMAN)
+            for(let i=1; i<suma; i++) drawCard(PLAYERS.HUMAN)
             drawCard(PLAYERS.HUMAN)
         }
 
@@ -156,9 +154,10 @@ function drawCard(who){
 //-------------------------Adding cards to the game if taking from the pile-------------
 function checkCoverCards(){
     if(coverMainCards.length==0){
-        coverMainCards = shuffleCards(uncoverMainCards)
-        uncoverMainCards.splice(0, uncoverMainCards.length-1)
-        coverMainCards.splice(coverMainCards.indexOf(uncoverMainCards[0]), 1)
+        let c = newUncoverCards.shift()
+        newCoverCards = shuffleCards(newUncoverCards)
+        newUncoverCards.splice(0, newUncoverCards.length)
+        newUncoverCards.unshift(c)
     }
 }
 
@@ -166,7 +165,7 @@ function checkCoverCards(){
 function selectingCard(){
     let selectingCardAlt = this.getAttribute('alt')
 
-    if(whoNow.innerText==PLAYERS.HUMAN && checkCard(selectingCardAlt)){
+    if(whoNow.innerText == PLAYERS.HUMAN && checkCard(selectingCardAlt)){
         uncoverMainCards.unshift(selectingCardAlt)
 
         uncoverMainCardImg.setAttribute("src", "/storage/cards/"+selectingCardAlt+".png")
@@ -179,7 +178,7 @@ function selectingCard(){
 
         setTimeout(function(){
             checkWin(whoNow.innerText)
-        }, 800);
+        }, 800)
 
         setTimeout(function(){
             bot()
@@ -234,7 +233,7 @@ function checkCard(selectedCard){
                 break
             case "0J":
                 if(suma<=5){
-                    suma=0;
+                    suma=0
                     sumaSpan.innerText=""
                 }
                 else{
@@ -244,10 +243,10 @@ function checkCard(selectedCard){
                 break
             case "0K":
                 suma+=5
-                sumaSpan.innerText=suma;
+                sumaSpan.innerText=suma
                 break
             case "0A":
-                break;
+                break
             default:
                 if(suma==0) return true
                 else return false
@@ -273,7 +272,7 @@ function changeCard(isCard, selectedCard){
             for(let i=1; i<suma; i++) drawCard(whoNow.innerText)
             drawCard(whoNow.innerText)
         }
-        suma=0;
+        suma=0
         sumaSpan.innerText=""
 
     }
@@ -289,11 +288,11 @@ function checkWin(who){
         case PLAYERS.HUMAN:
             cards = youCards.children
             whoNow.innerText=PLAYERS.BOT
-            break;
+            break
         case PLAYERS.BOT:
             cards = bot1Cards.children
             whoNow.innerText=PLAYERS.HUMAN
-            break;
+            break
     }
 
     if((cards.length)==0) win(who)
