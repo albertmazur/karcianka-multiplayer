@@ -19,7 +19,7 @@
                         {{ __('game.game') }}
                     </x-nav-link>
                     <x-nav-link :href="route('friend.index')" :active="request()->routeIs('friend.index')">
-                        {{ __('friend.friend') }}
+                        {{ __('friend.friends') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                 {{ __('game.game') }}
             </x-nav-link>
             <x-nav-link :href="route('friend.index')" :active="request()->routeIs('friend.index')">
-                {{ __('friend.friend') }}
+                {{ __('friend.friends') }}
             </x-nav-link>
         </div>
 
