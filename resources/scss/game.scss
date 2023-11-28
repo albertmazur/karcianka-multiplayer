@@ -7,6 +7,9 @@
 
     img{
         display: inline;
+        @media screen and (max-width: 1536px) {
+            height: 15vh;
+        }
     }
 
     #cardsBot1 img{
@@ -46,10 +49,6 @@
         box-sizing: border-box;
         padding: 10px 40px;
         border-radius: 20px;
-
-        img{
-            width: 35%;
-        }
     }
 
     .cardsHuman img, .cover{
@@ -85,6 +84,13 @@
     ul li span{
         font-size: 20px;
         font-weight: bold;
+    }
+
+    #history{
+        img{
+            height: auto;
+            width: 90%;
+        }
     }
 
     .buttons{
