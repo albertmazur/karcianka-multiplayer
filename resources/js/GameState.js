@@ -78,20 +78,39 @@ class GameState {
             let unCard = this.uncoverCards.at(0)
             let uncoverCardSign = unCard.substring(0, 2)
             let uncoverCardFigure = unCard.substring(3, unCard.length)
-            this.botCards.forEach(card => {
-                let cardSign = card.substring(0,2)
-                let cardFigure = card.substring(3, card.length)
+            if(this.player == PLAYERS.BOT){
+                this.botCards.forEach(card => {
+                    let cardSign = card.substring(0,2)
+                    let cardFigure = card.substring(3, card.length)
 
-                if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
-                    if(this.suma == 0) possibleCard.unshift(card)
-                    else if(cardSign == "02" ||
-                    cardSign == "03" ||
-                    cardSign == "0K" ||
-                    cardSign == "0J" ||
-                    cardSign == "0Q" ||
-                    cardSign == "0A") possibleCard.unshift(card)
-                }
-            })
+                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                        if(this.suma == 0) possibleCard.unshift(card)
+                        else if(cardSign == "02" ||
+                        cardSign == "03" ||
+                        cardSign == "0K" ||
+                        cardSign == "0J" ||
+                        cardSign == "0Q" ||
+                        cardSign == "0A") possibleCard.unshift(card)
+                    }
+                })
+            }
+            if(this.player == PLAYERS.HUMAN){
+                this.humanCards.forEach(card => {
+                    let cardSign = card.substring(0,2)
+                    let cardFigure = card.substring(3, card.length)
+
+                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                        if(this.suma == 0) possibleCard.unshift(card)
+                        else if(cardSign == "02" ||
+                        cardSign == "03" ||
+                        cardSign == "0K" ||
+                        cardSign == "0J" ||
+                        cardSign == "0Q" ||
+                        cardSign == "0A") possibleCard.unshift(card)
+                    }
+                })
+            }
+
 
             if(this.coverCards.length>0){
                 possibleCard.push("add")
