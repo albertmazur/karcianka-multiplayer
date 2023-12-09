@@ -1,4 +1,4 @@
-export function heurystyczne(cards, uncoverMainCardImg, youCardsCount, suma){
+export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
     let cardsSpecial = []
     let cardsNotSpecial = []
 

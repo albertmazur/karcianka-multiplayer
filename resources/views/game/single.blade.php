@@ -32,7 +32,7 @@
         <div class="flex flex-row">
             <div class="flex flex-col gap-3">
                 <div class="flex items-center">
-                    <input checked id="default-radio-1" type="radio" value="Heurystyczne" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+                    <input checked id="default-radio-1" type="radio" value="heuristic" name="tryb" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
                     <x-input-label for="default-radio-1" class="ms-2">Heurystyczne</x-input-label>
                 </div>
 

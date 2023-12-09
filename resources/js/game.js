@@ -1,5 +1,5 @@
 import { mcts } from './GameState.js'
-import { heurystyczne } from './heurystyczne.js'
+import { heuristic } from './heuristic.js'
 import {shuffleCards, PLAYERS} from './helper.js'
 
 //-----------------Card names--------------------------------
@@ -197,7 +197,7 @@ function bot(){
 function ruchBota(cards){
     let playedCard
     let isCard=false
-    if(mode == "Heurystyczne") playedCard = heurystyczne(cards, uncoverMainCardImg, youCards.length, suma)
+    if(mode == "Heuristic") playedCard = heuristic(cards, uncoverMainCardImg, youCards.length, suma)
     if(mode == "MCTS") playedCard = mcts(cards, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma)
 
     if(playedCard != null){
