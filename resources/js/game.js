@@ -154,10 +154,12 @@ function drawCard(who){
 //-------------------------Adding cards to the game if taking from the pile-------------
 function checkCoverCards(){
     if(coverMainCards.length==0){
-        let c = newUncoverCards.shift()
-        newCoverCards = shuffleCards(newUncoverCards)
-        newUncoverCards.splice(0, newUncoverCards.length)
-        newUncoverCards.unshift(c)
+        let c = uncoverMainCards.shift()
+        coverMainCards = shuffleCards(newUncoverCards)
+        uncoverMainCards.splice(0, newUncoverCards.length)
+        uncoverMainCards.unshift(c)
+        console.log("coverMainCards: "+coverMainCards)
+        console.log("uncoverMainCards: "+uncoverMainCards)
     }
 }
 

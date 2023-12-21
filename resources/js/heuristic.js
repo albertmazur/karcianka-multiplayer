@@ -1,3 +1,5 @@
+import {special_card_check} from './helper.js'
+
 export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
     let cardsSpecial = []
     let cardsNotSpecial = []
@@ -12,19 +14,8 @@ export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
         let unCoverCardFigure = unCoverCardAlt.substring(3, unCoverCardAlt.length)
 
         if(cardSign==unCoverCardSign || cardFigure==unCoverCardFigure){
-
-            if(cardSign == "02" ||
-               cardSign == "03" ||
-               cardSign == "0K" ||
-               cardSign == "0J" ||
-               cardSign == "0Q" ||
-               cardSign == "0A")
-            {
-                cardsSpecial.unshift(card)
-            }
-            else{
-                cardsNotSpecial.unshift(card)
-            }
+            if(special_card_check(cardSign))cardsSpecial.unshift(card)
+            else cardsNotSpecial.unshift(card)
         }
     }
 

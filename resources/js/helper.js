@@ -21,3 +21,13 @@ export function shuffleCards(deckToShuffle) {
 
     return coverCards
 }
+
+
+export function special_card_check(cardSign){
+    return (cardSign == "02" ||
+    cardSign == "03" ||
+    cardSign == "0K" ||
+    cardSign == "0J" ||
+    cardSign == "0Q" ||
+    cardSign == "0A")
+}
