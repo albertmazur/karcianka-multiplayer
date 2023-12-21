@@ -1,4 +1,4 @@
-import { mcts } from './GameState.js'
+import { mcts } from './mcts.js'
 import { heuristic } from './heuristic.js'
 import {shuffleCards, PLAYERS} from './helper.js'
 
