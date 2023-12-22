@@ -2,5 +2,6 @@
 return[
     "game" => "Gra",
     "single" => "Gra sam",
-    "history" => "Historia zagrań"
+    "history" => "Historia zagrań",
+    "show_cards" => "Pokaż katy"
 ];

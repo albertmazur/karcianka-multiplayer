@@ -29,6 +29,7 @@ let whoNow = document.getElementById("whoNow")
 let mode
 let firstGame = true
 let canContinue = true
+let swicherCardBot = document.getElementById("showCardsSwitcher")
 let newGame = document.getElementById("start")
 newGame.addEventListener("click", start)
 
@@ -64,7 +65,7 @@ function start(){
 
         if(i%2==0) youCards.appendChild(img)
         if(i%2==1){
-            //img.setAttribute("src", '/storage/cards/background_card.png')
+            if(!swicherCardBot.checked) img.setAttribute("src", '/storage/cards/background_card.png')
             bot1Cards.appendChild(img)
         }
     }
@@ -104,7 +105,7 @@ function drawUncoverMain(){
         whoNow.innerText=PLAYERS.BOT
 
         setTimeout(function (){
-            bot()
+            moveBot()
         }, 2000)
     }
     else alert("Nie twój ruch nie możesz brać karty")
@@ -114,8 +115,11 @@ function drawUncoverMain(){
 function creatCard(card){
     let img = document.createElement("img")
     if (whoNow.innerText==PLAYERS.HUMAN) img.setAttribute("src", '/storage/cards/'+card+'.png')
-    // else img.setAttribute("src", '/storage/cards/background_card.png')
-    else img.setAttribute("src", '/storage/cards/'+card+'.png')
+    else{
+        if(swicherCardBot.checked) img.setAttribute("src", '/storage/cards/'+card+'.png')
+        else img.setAttribute("src", '/storage/cards/background_card.png')
+    }
+
     img.setAttribute("alt", card)
     return img
 }
@@ -130,7 +134,10 @@ function drawCard(who){
         img.addEventListener("click", selectingCard)
         youCards.appendChild(img)
     }
-    if(who==PLAYERS.BOT)  bot1Cards.appendChild(img)
+    if(who==PLAYERS.BOT){
+        if(!swicherCardBot.checked) img.setAttribute("src", '/storage/cards/background_card.png')
+        bot1Cards.appendChild(img)
+    }
 
     setTimeout(function(){
         img.classList.add("addCard")
@@ -158,8 +165,6 @@ function checkCoverCards(){
         coverMainCards = shuffleCards(newUncoverCards)
         uncoverMainCards.splice(0, newUncoverCards.length)
         uncoverMainCards.unshift(c)
-        console.log("coverMainCards: "+coverMainCards)
-        console.log("uncoverMainCards: "+uncoverMainCards)
     }
 }
 
@@ -183,31 +188,29 @@ function selectingCard(){
         }, 800)
 
         setTimeout(function(){
-            bot()
+            moveBot()
         }, 2000)
     }
     else if(whoNow.innerText!=PLAYERS.HUMAN) alert("Nie twój ruch")
     else alert("Tą kartą nie można zagrać")
 }
 
-//-------------------------Obsługa boty----------------------------
-function bot(){
-    if(whoNow.innerText==PLAYERS.BOT) ruchBota(bot1Cards.children)
-}
-
 //------------------------------Bot movement-------------------------------------
-function ruchBota(cards){
-    let playedCard
-    let isCard=false
-    if(mode == "Heuristic") playedCard = heuristic(cards, uncoverMainCardImg, youCards.length, suma)
-    if(mode == "MCTS") playedCard = mcts(cards, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma)
+function moveBot(){
+    if(whoNow.innerText==PLAYERS.BOT){
+       let cards = bot1Cards.children
+       let playedCard
+       let isCard = false
+       if(mode == "Heuristic") playedCard = heuristic(cards, uncoverMainCardImg, youCards.length, suma)
+       if(mode == "MCTS") playedCard = mcts(cards, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma)
 
-    if(playedCard != null){
-        checkCard(playedCard.getAttribute("alt"))
-        isCard=true
+       if(playedCard != null){
+           checkCard(playedCard.getAttribute("alt"))
+           isCard=true
+       }
+
+       changeCard(isCard, playedCard)
     }
-
-    changeCard(isCard, playedCard)
 }
 
 //-------------------Checks if this card can be played----------------
@@ -261,6 +264,8 @@ function checkCard(selectedCard){
 //---------------------------Putting the card that has been played into the stack--------------------
 function changeCard(isCard, selectedCard){
     if(isCard){
+        selectedCard.setAttribute("src", `/storage/cards/${selectedCard.getAttribute("alt")}.png`)
+
         uncoverMainCardImg.setAttribute("src", selectedCard.getAttribute("src"))
         uncoverMainCardImg.setAttribute("alt", selectedCard.getAttribute("alt"))
         uncoverMainCards.unshift(selectedCard.getAttribute("alt"))
@@ -335,3 +340,20 @@ function addForHistory(card){
     card.classList.remove("removeCard")
     historyGame.insertBefore(card, historyGame.firstChild)
 }
+
+swicherCardBot.addEventListener("click",function(e) {
+    let newCard = []
+    for(let i =0; i< bot1Cards.children.length; i++){
+        if(e.target.checked){
+            let c = bot1Cards.children[i].getAttribute("alt")
+            newCard.push(creatCard(c))
+        }
+        else bot1Cards.children[i].setAttribute("src", `/storage/cards/background_card.png`)
+    }
+    if(e.target.checked){
+        bot1Cards.innerHTML = ''
+        newCard.forEach(card =>{
+            bot1Cards.append(card)
+        })
+    }
+})
