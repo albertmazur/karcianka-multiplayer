@@ -3,17 +3,12 @@ import {shuffleCards, special_card_check, PLAYERS} from './helper.js'
 export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
     PLAYERS = PLAYERS
     let cardPlayedAlt = []
-    let youCardsdAlt = []
 
     for (let card of cardPlayed) {
         cardPlayedAlt.unshift(card.alt)
     }
 
-    for (let card of youCards.children) {
-        youCardsdAlt.unshift(card.alt)
-    }
-
-    let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
+    let initialState = new GameState(cardPlayedAlt, youCards, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
     let mctsIteration = document.getElementById("mctsIteration").value
     let bestMove = runMCTS(initialState, mctsIteration)
 
