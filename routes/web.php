@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('test', [TestController::class, 'test']);
+Route::get('private', [TestController::class, 'private']);
 Route::view('bbb', 'game.checking');
 
 Route::middleware(['auth', 'verified'])->group(function () {
