@@ -1,19 +1,14 @@
-import {shuffleCards, PLAYERS} from './helper.js'
+import {shuffleCards, special_card_check, PLAYERS} from './helper.js'
 
 export function mcts(cardPlayed, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
     PLAYERS = PLAYERS
     let cardPlayedAlt = []
-    let youCardsdAlt = []
 
     for (let card of cardPlayed) {
         cardPlayedAlt.unshift(card.alt)
     }
 
-    for (let card of youCards.children) {
-        youCardsdAlt.unshift(card.alt)
-    }
-
-    let initialState = new GameState(cardPlayedAlt, youCardsdAlt, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
+    let initialState = new GameState(cardPlayedAlt, youCards, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
     let mctsIteration = document.getElementById("mctsIteration").value
     let bestMove = runMCTS(initialState, mctsIteration)
 
@@ -85,14 +80,9 @@ class GameState {
 
                     if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
                         if(this.suma == 0) possibleCard.unshift(card)
-                        else if(cardSign == "02" ||
-                        cardSign == "03" ||
-                        cardSign == "0K" ||
-                        cardSign == "0J" ||
-                        cardSign == "0Q" ||
-                        cardSign == "0A") possibleCard.unshift(card)
-                    }
-                })
+                else if(special_card_check(cardSign)) possibleCard.unshift(card)
+            }
+        })
             }
             if(this.player == PLAYERS.HUMAN){
                 this.humanCards.forEach(card => {
@@ -101,12 +91,7 @@ class GameState {
 
                     if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
                         if(this.suma == 0) possibleCard.unshift(card)
-                        else if(cardSign == "02" ||
-                        cardSign == "03" ||
-                        cardSign == "0K" ||
-                        cardSign == "0J" ||
-                        cardSign == "0Q" ||
-                        cardSign == "0A") possibleCard.unshift(card)
+                        else if(special_card_check(cardSign)) possibleCard.unshift(card)
                     }
                 })
             }
