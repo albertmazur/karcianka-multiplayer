@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\FriendListServiceProvider::class,
+        App\Providers\GameServiceProvider::class
     ])->toArray(),
 
     /*

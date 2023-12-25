@@ -1,4 +1,4 @@
-export const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: "Bot" })
+export const PLAYERS = Object.freeze({ HUMAN: document.querySelector(".human p").textContent, BOT: document.querySelector(".bot1 p").textContent })
 
 export function shuffleCards(deckToShuffle) {
     let n=deckToShuffle.length

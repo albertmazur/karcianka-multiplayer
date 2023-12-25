@@ -2,26 +2,26 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class testWebsocket implements ShouldBroadcast
+class GameBroadcast implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
+    private User $user;
+    private string $data;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
-    {
-        $this->data='this is test data';
+    public function __construct(User $user, string $data){
+        $this->user = $user;
+        $this->data = $data;
     }
 
     /**
@@ -29,14 +29,19 @@ class testWebsocket implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
-    {
+    public function broadcastOn(): array{
         return [
-            new Channel('testing'),
+            new PrivateChannel('PrivateGameChannel.user.1'),
         ];
     }
 
     public function broadcastAs(){
-        return 'MyWebSocket';
+        return 'private_game';
+    }
+
+    public function broadcastWith(){
+        return [
+            'data' => $this->data
+        ];
     }
 }

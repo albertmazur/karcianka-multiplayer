@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class FriendList extends Model
+class GameInvation extends Model
 {
     use HasFactory;
 
@@ -17,6 +17,6 @@ class FriendList extends Model
     }
 
     public function userFriend(): BelongsTo{
-        return $this->belongsTo(User::class, 'user_friend_id');
+        return $this->belongsTo(User::class, 'send_user_id');
     }
 }
