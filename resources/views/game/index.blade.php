@@ -11,7 +11,7 @@
                                     <p>{{$game->userFriend->nick}}<p>
                                         <form method="POST" action="{{route("game.join")}}">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{$game->userFriend->id}}">
+                                            <input type="hidden" name="id" value="{{$game->id}}">
                                             <x-primary-button class="red">{{__('game.join')}}</x-primary-button>
                                         </form>
                                 </div>

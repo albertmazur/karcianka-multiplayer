@@ -45,7 +45,7 @@ class GameRepository implements Repository{
         return User::whereIn('id', $friendIds)->get();
     }
 
-    public function add(int $idAuth, int $user): User{
+    public function add(int $idAuth, int $user): Game{
         $invitation1 = $this->gameInvationModel->where('user_id', '=', $idAuth)->where('send_user_id', '=', $user)->first();
         $invitation2 = $this->gameInvationModel->where('user_id', '=', $user)->where('send_user_id', '=', $idAuth)->first();
 
@@ -57,7 +57,7 @@ class GameRepository implements Repository{
             $newGame->sum = 0;
             $newGame->created_at = Date::now();
             $newGame->save();
-            return User::find($user);
+            return $newGame;
         }
         return null;
     }

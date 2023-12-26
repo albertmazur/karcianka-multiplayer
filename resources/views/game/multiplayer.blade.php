@@ -72,7 +72,8 @@
                 const id = '{{Auth::id()}}'
             @endisset ($user)
 
-            function start(){
+            function start(game_id){
+                console.log("userId: "+userId)
                 fetch("{{route('game.broadcast')}}", {
                     method: 'POST',
                     headers: {
@@ -81,7 +82,7 @@
                     },
                     body: JSON.stringify({
                         userId: userId,
-                        message: "start"
+                        message: game_id
                     }),
                 })
                 .then(function(response) {
@@ -97,12 +98,12 @@
                     console.error('Error:', error);
                 });
             }
-            @isset($join)
-                start()
+            @isset($game_id)
+                start("{{$game_id}}")
 
                 document.querySelector(".game").style.display = "block"
                 document.getElementById("watting").remove()
-            @endisset ($join)
+            @endisset ($game_id)
         </script>
         @vite([ 'resources/js/multiplayer.js',])
     </div>

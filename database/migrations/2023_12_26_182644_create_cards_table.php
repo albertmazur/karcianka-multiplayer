@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(CardGame::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->nullable();
             $table->enum("where", ["cover", "uncover", "user"]);
             $table->foreignIdFor(Game::class);
         });
