@@ -13,14 +13,14 @@ class GameBroadcast implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private User $user;
+    private int $userId;
     private string $data;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user, string $data){
-        $this->user = $user;
+    public function __construct(int $userId, string $data){
+        $this->userId = $userId;
         $this->data = $data;
     }
 
@@ -31,7 +31,7 @@ class GameBroadcast implements ShouldBroadcast
      */
     public function broadcastOn(): array{
         return [
-            new PrivateChannel('PrivateGameChannel.user.1'),
+            new PrivateChannel('PrivateGameChannel.user.'.$this->userId),
         ];
     }
 

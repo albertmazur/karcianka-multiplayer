@@ -1,4 +1,8 @@
-window.Echo.private('PrivateGameChannel.user.1')
+window.Echo.private('PrivateGameChannel.user.'+id)
     .listen('.private_game', (e) => {
-        console.log(e);
+        console.log(e.data)
+        if(e.data == "start"){
+            document.querySelector(".game").style.display = "block"
+            document.getElementById("watting").remove()
+        }
     })

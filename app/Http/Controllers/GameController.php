@@ -29,27 +29,27 @@ class GameController extends Controller{
 
     public function multiplayer(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $f = $this->gameInvationRepository->add(Auth::id(), $date["id"]);
+        $user = $this->gameInvationRepository->add(Auth::id(), $date["id"]);
 
-        if($f == true) return view('game.multiplayer');
+        if($user == true) return view("game.multiplayer", ["user" => $user]);
         else return back()->with(["error" => "Nie uruchomiono gry"]);
     }
 
     public function join(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $f = $this->gameInvationRepository->remove(Auth::id(), $date["id"]);
+        $user = $this->gameInvationRepository->remove(Auth::id(), $date["id"]);
 
-        if($f == true) return view('game.multiplayer', ["start" => "Udało się"]);
+        if($user == true) return view("game.multiplayer", ["user" => $user, "join" => 1]);
         else return back()->with(["error" => "Nie można dołaczyć do gry"]);
     }
 
     public function broadcast(Request $request){
-        event(new GameBroadcast(Auth::user(), 'Test dla aaa'));
+        $date = $request->validate([
+            "userId" => ["required", "integer"],
+            "message" => ["string"],
+        ]);
+        event(new GameBroadcast($date["userId"], $date["message"]));
 
         return response()->json(['status' => 'Message sent!']);
-    }
-
-    public function receive(Request $request){
-        return view('game.multiplayer', ['message'=> $request->get('message')]);
     }
 }

@@ -31,7 +31,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/game/multiplayer', [GameController::class, 'multiplayer'])->name('game.multiplayer');
     Route::post('/game/join', [GameController::class, 'join'])->name('game.join');
     Route::post('/game/broadcast', [GameController::class, 'broadcast'])->name('game.broadcast');
-    Route::post('/game/receive', [GameController::class, 'receive'])->name('game.receive');
 
     Route::get('/friend', [FriendController::class, 'index'])->name('friend.index');
     Route::put('/friend', [FriendController::class, 'sendInvitation'])->name('friend.add');

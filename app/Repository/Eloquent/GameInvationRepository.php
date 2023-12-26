@@ -17,16 +17,6 @@ class GameInvationRepository implements Repository{
         $this->friendListModel = $friendList;
     }
 
-    public function remove(int $idAuth, int $user):bool{
-        $game = $this->gameInvationModel->where("user_id", '=', $idAuth)->where("send_user_id", '=', $user)->first();
-        if($game != null){
-            $game->delete();
-            return true;
-        }
-        else return false;
-
-    }
-
     public function listGames(int $idAuth): Collection {
         return $this->gameInvationModel->where("user_id", "=", $idAuth)->get();
     }
@@ -54,7 +44,7 @@ class GameInvationRepository implements Repository{
         return User::whereIn('id', $friendIds)->get();
     }
 
-    public function add(int $idAuth, int $user): bool{
+    public function add(int $idAuth, int $user): User{
         $invitation1 = $this->gameInvationModel->where('user_id', '=', $idAuth)->where('send_user_id', '=', $user)->first();
         $invitation2 = $this->gameInvationModel->where('user_id', '=', $user)->where('send_user_id', '=', $idAuth)->first();
 
@@ -65,8 +55,17 @@ class GameInvationRepository implements Repository{
             $newGame->send_user_id = $idAuth;
             $newGame->accepted = false;
             $newGame->save();
-            return true;
+            return User::find($user);
         }
-        return false;
+        return null;
+    }
+
+    public function remove(int $idAuth, int $user): User{
+        $game = $this->gameInvationModel->where("user_id", '=', $idAuth)->where("send_user_id", '=', $user)->first();
+        if($game != null){
+            $game->delete();
+            return User::find($user);
+        }
+        else return null;
     }
 }
