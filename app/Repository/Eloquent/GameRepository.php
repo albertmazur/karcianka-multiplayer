@@ -2,17 +2,18 @@
 
 namespace App\Repository\Eloquent;
 
-use App\Models\GameInvation;
+use App\Models\Game;
 use App\Models\FriendList;
 use App\Models\User;
-use App\Repository\GameInvationRepository as Repository;
+use App\Repository\GameRepository as Repository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Date;
 
-class GameInvationRepository implements Repository{
-    private GameInvation $gameInvationModel;
+class GameRepository implements Repository{
+    private Game $gameInvationModel;
     private FriendList $friendListModel;
 
-    public function __construct(GameInvation $gameInvation, FriendList $friendList){
+    public function __construct(Game $gameInvation, FriendList $friendList){
         $this->gameInvationModel = $gameInvation;
         $this->friendListModel = $friendList;
     }
@@ -36,7 +37,7 @@ class GameInvationRepository implements Repository{
             )->unique();
 
         foreach ($games as $game) {
-            $friendIds = $friendIds->reject(function ($friendId) use ($game) {
+            $friendIds = $friendIds->reject(function ($friendId) use ($game){
                 return $friendId == $game->send_user_id;
             });
         }
@@ -49,11 +50,12 @@ class GameInvationRepository implements Repository{
         $invitation2 = $this->gameInvationModel->where('user_id', '=', $user)->where('send_user_id', '=', $idAuth)->first();
 
         if($invitation1 == null && $invitation2 == null){
-            $newGame = new GameInvation();
+            $newGame = new Game();
 
             $newGame->user_id = $user;
             $newGame->send_user_id = $idAuth;
-            $newGame->accepted = false;
+            $newGame->sum = 0;
+            $newGame->created_at = Date::now();
             $newGame->save();
             return User::find($user);
         }

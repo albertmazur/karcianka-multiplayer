@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Events\GameBroadcast;
-use App\Repository\GameInvationRepository;
+use App\Models\User;
+use App\Repository\GameRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class GameController extends Controller{
 
-    private GameInvationRepository $gameInvationRepository;
+    private GameRepository $gameInvationRepository;
 
-    public function __construct(GameInvationRepository $gameInvationRepository){
+    public function __construct(GameRepository $gameInvationRepository){
         $this->gameInvationRepository = $gameInvationRepository;
     }
 
@@ -37,7 +38,7 @@ class GameController extends Controller{
 
     public function join(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $user = $this->gameInvationRepository->remove(Auth::id(), $date["id"]);
+        $user = User::find($date['id']);
 
         if($user == true) return view("game.multiplayer", ["user" => $user, "join" => 1]);
         else return back()->with(["error" => "Nie można dołaczyć do gry"]);
@@ -48,7 +49,14 @@ class GameController extends Controller{
             "userId" => ["required", "integer"],
             "message" => ["string"],
         ]);
-        event(new GameBroadcast($date["userId"], $date["message"]));
+
+        if($date["message"] == "start"){
+
+        }
+        else{
+            
+        }
+        event(new GameBroadcast($date["userId"], ["start" => $date["message"]]));
 
         return response()->json(['status' => 'Message sent!']);
     }

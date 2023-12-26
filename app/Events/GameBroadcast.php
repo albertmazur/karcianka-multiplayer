@@ -14,14 +14,14 @@ class GameBroadcast implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     private int $userId;
-    private string $data;
+    private array $gameState;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(int $userId, string $data){
+    public function __construct(int $userId, array $gameState){
         $this->userId = $userId;
-        $this->data = $data;
+        $this->gameState = $gameState;
     }
 
     /**
@@ -41,7 +41,7 @@ class GameBroadcast implements ShouldBroadcast
 
     public function broadcastWith(){
         return [
-            'data' => $this->data
+            'data' => $this->gameState
         ];
     }
 }

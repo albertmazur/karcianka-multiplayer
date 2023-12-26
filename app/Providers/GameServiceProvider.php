@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Repository\GameInvationRepository;
-use App\Repository\Eloquent\GameInvationRepository as EloquentGameInvationRepositor;
+use App\Repository\GameRepository;
+use App\Repository\Eloquent\GameRepository as EloquentGameRepositor;
 use Illuminate\Support\ServiceProvider;
 
 class GameServiceProvider extends ServiceProvider
@@ -13,7 +13,7 @@ class GameServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(GameInvationRepository::class, EloquentGameInvationRepositor::class);
+        $this->app->singleton(GameRepository::class, EloquentGameRepositor::class);
     }
 
     /**
