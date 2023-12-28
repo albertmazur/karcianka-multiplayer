@@ -20,6 +20,7 @@ export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
     }
 
     if(youCardsCount<=2){
+        console.log(youCardsCountr)
         for(let card of cardsSpecial){
             let znak = card.getAttribute("alt").substring(0,2)
             if(znak=="02" || znak=="03" || znak=="0K"){

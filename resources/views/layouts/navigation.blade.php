@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('friend.index')" :active="request()->routeIs('friend.index')">
                         {{ __('friend.friends') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('game.stats')" :active="request()->routeIs('game.stats')">
+                        {{ __('Stats') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -81,6 +84,9 @@
             </x-nav-link>
             <x-nav-link :href="route('friend.index')" :active="request()->routeIs('friend.index')">
                 {{ __('friend.friends') }}
+            </x-nav-link>
+            <x-nav-link :href="route('game.stats')" :active="request()->routeIs('game.stats')">
+                {{ __('Stats') }}
             </x-nav-link>
         </div>
 

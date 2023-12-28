@@ -25,7 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
-    Route::get('/game/stats', [GameController::class, 'single'])->name('game.stats');
+    Route::get('/game/stats', [GameController::class, 'stats'])->name('game.stats');
+    Route::post('/game/add', [GameController::class, 'stats'])->name('game.stats.add');
 
     Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
     Route::put('friend', [FriendController::class, 'sendInvitation'])->name('friend.add');

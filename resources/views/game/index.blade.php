@@ -82,5 +82,36 @@
             }
         </style>
         @vite([ 'resources/js/game.js',])
+        <script>
+
+
+            // function sendToDataBase(){
+            //     console.log("bot1Cards: "+bot1Cards.lenght)
+            //     console.log("youCards: "+youCards.lenght)
+            //     fetch("{{route('game.stats.add')}}", {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            //         },
+            //         body: JSON.stringify({
+            //             tryb: mode,
+            //             win: game_id
+            //         }),
+            //     })
+            //     .then(function(response) {
+            //             if (!response.ok) {
+            //                 throw new Error(`HTTP error! Status: ${response.status}`);
+            //             }
+            //             return response.json();
+            //         })
+            //     .then(data => {
+            //         console.log(data);
+            //     })
+            //     .catch((error) => {
+            //         console.error('Error:', error);
+            //     });
+            // }
+        </script>
     </div>
 </x-app-layout>
