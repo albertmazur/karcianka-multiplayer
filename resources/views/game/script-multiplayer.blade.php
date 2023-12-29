@@ -5,13 +5,14 @@
     const id = {{Auth::id()}}
     const token = '{{ csrf_token() }}'
     const route = "{{route('game.broadcast')}}"
-    let game_id
+    const game_id = {{$game_id}}
+    let start
 
-    @isset($game_id)
-    game_id = {{$game_id}}
+    @isset($start)
+        start = {{$start}}
 
         document.querySelector(".game").style.display = "block"
         document.getElementById("watting").remove()
-    @endisset($game_id)
+    @endisset($start)
 </script>
 @endisset($user)

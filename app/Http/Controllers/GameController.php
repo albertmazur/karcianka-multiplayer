@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\GameBroadcast;
+use App\Http\Requests\GetDataGame;
 use App\Models\Card;
 use App\Models\CardGame;
 use App\Models\Game;
@@ -37,24 +38,19 @@ class GameController extends Controller{
         $date = $request->validate(["id" => ["required", "integer"]]);
         $game = $this->gameInvationRepository->add(Auth::id(), $date["id"]);
 
-        return view("game.multiplayer", ["user" => User::find($game->user_id)]);
+        return view("game.multiplayer", ["user" => User::find($game->user_id), "game_id" => $game->id]);
     }
 
     public function join(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
         $game = Game::find($date['id']);
 
-        if($game == true) return view("game.multiplayer", ["user" => User::find($game->send_user_id), "game_id" => $date['id']]);
+        if($game == true) return view("game.multiplayer", ["user" => User::find($game->send_user_id), "game_id" => $date['id'], "start" => 1]);
         else return back()->with(["error" => "Nie można dołaczyć do gry"]);
     }
 
-    public function broadcast(Request $request){
-        $date = $request->validate([
-            "userId" => ["required", "exists:App\Models\User,id"],
-            "game" => ["required", "exists:App\Models\Game,id"],
-            "start" => ["boolean"],
-            "card" => ["string"]
-        ]);
+    public function broadcast(GetDataGame $request){
+        $date = $request->validated();
         $d = [];
         $game = Game::find($date["game"]);
         if(isset($date["start"]) && $date["start"]){
@@ -62,7 +58,9 @@ class GameController extends Controller{
                 $d = $this->startGame($game);
                 $d1 = $d;
                 $d1["user2"] = count($d["user2"]);
+
                 event(new GameBroadcast($game->send_user_id, $d1));
+
                 $d2 = $d;
                 $d2["user1"] = $d["user2"];
                 $d2["user2"] = count($d["user1"]);
@@ -72,17 +70,31 @@ class GameController extends Controller{
                 $d = ['messager' =>"Są karty"];
             }
         }
+
         if(isset($date["card"])){
 
             if($date["card"] == "add"){
                 $card = $game->coverCard();
                 $card->user_id = $date['userId'];
                 $card->where = "user";
-                $card->save();
-                $d = ["card" => $card->cardGame->card];
+                $card->update();
+                if($date["userId"] == $game->user_id){
+                    $whoNow = $game->user->nick;
+                    $game->who_now = $game->user->id;
+                    $send = $game->user_id;
+                }
+                if($date["userId"] == $game->send_user_id){
+                    $whoNow = $game->userFriend->nick;
+                    $game->who_now = $game->userFriend->id;
+                    $send = $game->send_user_id;
+                }
+                $game->update();
+
+                event(new GameBroadcast($send, ["card" => "add", "whoNow" => $whoNow]));
+                $d = ["card" => $card->cardGame->card, "whoNow" => $whoNow];
             }
             else{
-
+                Log::debug()
             }
         }
         return response()->json($d);
@@ -93,11 +105,12 @@ class GameController extends Controller{
         $user1 = new Collection();
         $user2 = new Collection();
 
-        for($i = 0; $i< count($cardGame); $i++){
+        for($i = 0; $i < count($cardGame); $i++){
             $c = new Card();
             $c->card_game_id = $cardGame[$i]->id;
             $c->game_id = $game->id;
-            if($i< 10){
+
+            if($i < 10){
                 $c->where = "user";
 
                 if($i%2==0){
@@ -120,6 +133,8 @@ class GameController extends Controller{
 
         return[
             "start" => $game->id,
+            "sum" => $game->sum,
+            "whoNow" => $game->whoNow->nick,
             "user1" => $game->user1(),
             "user2" => $game->user2(),
             "uncover" => $uncoverCard->cardGame->card,

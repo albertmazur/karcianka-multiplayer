@@ -51,6 +51,7 @@ class GameRepository implements Repository{
 
         $newGame->user_id = $user;
         $newGame->send_user_id = $idAuth;
+        $newGame->who_now = $user;
         $newGame->sum = 0;
         $newGame->created_at = Date::now();
         $newGame->save();

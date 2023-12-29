@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-
-use function Laravel\Prompts\select;
+use Illuminate\Support\Facades\Log;
 
 class Game extends Model
 {
@@ -20,6 +19,10 @@ class Game extends Model
 
     public function userFriend(): BelongsTo{
         return $this->belongsTo(User::class, 'send_user_id');
+    }
+
+    public function whoNow(): BelongsTo{
+        return $this->belongsTo(User::class, 'who_now');
     }
 
     public function cards():HasMany{

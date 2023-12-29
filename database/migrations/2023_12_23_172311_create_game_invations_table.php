@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignId('send_user_id');
+            $table->foreignId('who_now');
             $table->integer('sum');
             $table->timestamps();
         });
