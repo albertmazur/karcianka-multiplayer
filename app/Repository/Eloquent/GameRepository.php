@@ -18,8 +18,9 @@ class GameRepository implements Repository{
         $this->friendListModel = $friendList;
     }
 
-    public function listGames(int $idAuth): Collection {
-        return $this->gameInvationModel->where("user_id", "=", $idAuth)->get();
+    public function listLatestGames(int $idAuth): Collection {
+        $listLatestGames = $this->gameInvationModel->where("user_id", "=", $idAuth)->orderBy("updated_at", "DESC")->get();
+        return $listLatestGames->unique('user_id');
     }
 
     public function listFriends(int $idAuth): Collection {
@@ -46,20 +47,14 @@ class GameRepository implements Repository{
     }
 
     public function add(int $idAuth, int $user): Game{
-        $invitation1 = $this->gameInvationModel->where('user_id', '=', $idAuth)->where('send_user_id', '=', $user)->first();
-        $invitation2 = $this->gameInvationModel->where('user_id', '=', $user)->where('send_user_id', '=', $idAuth)->first();
+        $newGame = new Game();
 
-        if($invitation1 == null && $invitation2 == null){
-            $newGame = new Game();
-
-            $newGame->user_id = $user;
-            $newGame->send_user_id = $idAuth;
-            $newGame->sum = 0;
-            $newGame->created_at = Date::now();
-            $newGame->save();
-            return $newGame;
-        }
-        return null;
+        $newGame->user_id = $user;
+        $newGame->send_user_id = $idAuth;
+        $newGame->sum = 0;
+        $newGame->created_at = Date::now();
+        $newGame->save();
+        return $newGame;
     }
 
     public function remove(int $idAuth, int $user): User{
@@ -69,5 +64,9 @@ class GameRepository implements Repository{
             return User::find($user);
         }
         else return null;
+    }
+
+    public function getLast($id): Game|null{
+        return $this->gameInvationModel->orderBy('updated_at','DESC')->first();
     }
 }

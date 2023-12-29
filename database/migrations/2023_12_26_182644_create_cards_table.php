@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->nullable();
             $table->enum("where", ["cover", "uncover", "user"]);
             $table->foreignIdFor(Game::class);
+            $table->timestamps();
         });
     }
 

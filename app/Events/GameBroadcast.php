@@ -40,8 +40,6 @@ class GameBroadcast implements ShouldBroadcast
     }
 
     public function broadcastWith(){
-        return [
-            'data' => $this->gameState
-        ];
+        return $this->gameState;
     }
 }
