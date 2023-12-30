@@ -12,7 +12,6 @@ use App\Repository\GameRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class GameController extends Controller{
@@ -85,31 +84,37 @@ class GameController extends Controller{
             $game->update();
 
             if($date["card"] == "add"){
-                $card = $game->coverCard();
-                $card->user_id = $date['userId'];
-                $card->where = "user";
-                $card->update();
-                $d = ["card" => $card->cardGame->card, "whoNow" => $whoNow];
-                event(new GameBroadcast($send, ["card" => "add", "whoNow" => $whoNow]));
+                $cards = [];
+                for($i = 1; $i < $game->sum; $i++){
+                    $cards[] = $this->addCard($game, $date['userId']);
+                }
+                $cards[] = $this->addCard($game, $date['userId']);
+
+                $d = ["card" => $cards, "whoNow" => $whoNow];
+                event(new GameBroadcast($send, ["card" => "add", "count" => count($cards), "whoNow" => $whoNow, "sum" => 0]));
             }
             else{
                 $card = Card::where("game_id", "=", $game->id)->where("user_id", "=", $date["userId"])->where("card_game_id", "=", CardGame::where("card", "=", $date["card"] )->first()->id)->first();
                 $cardGame = $card->cardGame;
 
                 $uncoverCardGame = $game->uncoverCard()->cardGame;
-                Log::debug($cardGame->card);
-                Log::debug($uncoverCardGame->card);
 
                 $selectedCardSign = substr($cardGame->card, 0, 2);
                 $selectedCardFigure = substr($cardGame->card, 3, strlen($cardGame->card));
                 $uncoverCardSign = substr($uncoverCardGame->card, 0, 2);
                 $uncoverCardFigure = substr($uncoverCardGame->card, 3, strlen($uncoverCardGame->card));
 
-                if($selectedCardSign==$uncoverCardSign || $selectedCardFigure==$uncoverCardFigure){
+                if(($selectedCardSign==$uncoverCardSign || $selectedCardFigure==$uncoverCardFigure) && $this->checkSing($selectedCardSign, $game)){
+
                     $card->user_id = null;
                     $card->where = "uncover";
                     $card->update();
-                    $d = ["card" => $cardGame->card, "whoNow" => $whoNow];
+                    $d = ["card" => $cardGame->card, "whoNow" => $whoNow, "sum" => $game->sum];
+
+                    if($game->checkWin()){
+                        $d = ["card" => $cardGame->card, "win" => $game->whoWin()];
+                    }
+
                     event(new GameBroadcast($send, $d));
                 }
             }
@@ -157,5 +162,48 @@ class GameController extends Controller{
             "user2" => $game->user2(),
             "uncover" => $uncoverCard->cardGame->card,
          ];
+    }
+
+    private function checkSing($sing, $game){
+        $sum = $game->sum;
+        $f = true;
+        switch($sing){
+            case "02":
+                $sum+=2;
+                break;
+            case "03":
+                $sum+=3;
+                break;
+            case "0Q":
+                $sum=0;
+                break;
+            case "0J":
+                if($sum<=5){
+                    $sum=0;
+                }
+                else{
+                    $sum-=5;
+                }
+                break;
+            case "0K":
+                $sum+=5;
+                break;
+            case "0A":
+                break;
+            default:
+                if($sum==0) $f = true;
+                else $f = false;
+        }
+        $game->sum =$sum;
+        $game->update();
+        return $f;
+    }
+
+    private function addCard($game, $userId){
+        $card = $game->coverCard();
+        $card->user_id = $userId;
+        $card->where = "user";
+        $card->update();
+        return $card->cardGame->card;
     }
 }

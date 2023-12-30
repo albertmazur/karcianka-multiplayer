@@ -16,7 +16,7 @@ window.Echo.private('PrivateGameChannel.user.'+id)
     .listen('.private_game', (e) => {
         console.log("Echo:")
         console.log(e)
-        continute(e)
+        brodcast(e)
     })
 
 function startGame(){
@@ -39,20 +39,29 @@ function startGame(){
             return response.json()
         })
     .then(data => {
-        continute(data)
+        brodcast(data)
     })
     .catch((error) => {
         console.error('Error:', error)
     })
 }
 
-function continute(e){
-    sumaText.textContent = e.sum ? e.sum : 0
-    whoNowText.textContent = e.whoNow
-    if(e.card == "add") bot1Cards.append(creatCard(null, PLAYERS.BOT))
+function brodcast(e){
+    if(e.sum != undefined) sumaText.textContent = e.sum ? e.sum : 0
+    if(e.whoNow != undefined) whoNowText.textContent = e.whoNow
+
+    if(e.win != undefined) win(e.win)
+
+    if(e.card == "add"){
+        for(let i=0; i< e.count; i++){
+            bot1Cards.append(creatCard(null, PLAYERS.BOT))
+        }
+    }
+
     if(mainCards.includes(e.card)){
         uncoverMainCards.setAttribute("src", `/storage/cards/${e.card}.png`)
         uncoverMainCards.setAttribute("alt", e.card)
+        addForHistory(e.card)
         bot1Cards.children[0].remove()
     }
 
@@ -61,11 +70,10 @@ function continute(e){
         document.querySelector(".game").style.display = "block"
         uncoverMainCards.setAttribute("src", `/storage/cards/${e.uncover}.png`)
         uncoverMainCards.setAttribute("alt", e.uncover)
+        addForHistory(e.uncover)
 
         coverMainCard.classList.add("cover")
-        coverMainCard.addEventListener("click",function(){
-            addCard()
-        })
+        coverMainCard.addEventListener("click", coverMainCardEvent)
 
         for(let i=0; i<mainCards.length; i++){
             let img = document.createElement("img")
@@ -84,6 +92,10 @@ function continute(e){
             bot1Cards.appendChild(img)
         }
     }
+}
+
+function coverMainCardEvent(){
+    addCard()
 }
 
 function creatCard(card, u){
@@ -121,8 +133,12 @@ function addCard(){
         })
         .then(data => {
             whoNowText.textContent = data.whoNow
-            let img = creatCard(data.card, PLAYERS.HUMAN)
-            youCards.appendChild(img)
+            sumaText.textContent = 0
+            data.card.forEach((card)=>{
+                let img = creatCard(card, PLAYERS.HUMAN)
+                youCards.appendChild(img)
+            })
+
         })
         .catch((error) => {
             console.error('Error:', error)
@@ -136,14 +152,7 @@ function addCard(){
 function clickForCard(cardImg){
     if(PLAYERS.HUMAN == whoNowText.textContent){
         let card = cardImg.getAttribute('alt')
-        let uncoverCard = uncoverMainCards.getAttribute("alt")
-
-        let selectedCardSign = card.substring(0,2)
-        let selectedCardFigure = card.substring(3, card.length)
-        let uncoverCardSign = uncoverCard.substring(0,2)
-        let uncoverCardFigure = uncoverCard.substring(3, uncoverCard.length)
-
-        if(selectedCardSign==uncoverCardSign || selectedCardFigure==uncoverCardFigure){
+        if(checkSelectCard(card)){
             fetch(route, {
                 method: 'POST',
                 headers: {
@@ -164,8 +173,15 @@ function clickForCard(cardImg){
             })
             .then(data => {
                 console.log(data)
-                whoNowText.textContent = data.whoNow
+                if(data.win == undefined){
+                    sumaText.textContent = data.sum ? data.sum : 0
+                    whoNowText.textContent = data.whoNow
+                }
+                else{
+                    win(data.win)
+                }
                 uncoverMainCards.setAttribute("src", `/storage/cards/${card}.png`)
+                addForHistory(card)
             })
             .catch((error) => {
                 console.error('Error:', error)
@@ -179,4 +195,38 @@ function clickForCard(cardImg){
     else{
         alert("Nie twój ruch")
     }
+}
+
+function win(who){
+    whoNowText.remove()
+    let whoWin = document.createElement("p")
+    whoWin.id="whoWin"
+    whoWin.textContent="Wygrał " + who
+    document.querySelector(".centerBoard").insertBefore(whoWin, document.querySelector(".centerBoard p"))
+    coverMainCard.classList = ""
+    coverMainCard.removeEventListener("click", coverMainCardEvent)
+}
+
+function addForHistory(card){
+    let historyGame = document.getElementById("history")
+    historyGame.insertBefore(creatCard(card, PLAYERS.HUMAN), historyGame.firstChild)
+}
+
+
+function checkSelectCard(card){
+    let uncoverCard = uncoverMainCards.getAttribute("alt")
+
+    let selectedCardSign = card.substring(0,2)
+    let selectedCardFigure = card.substring(3, card.length)
+    let uncoverCardSign = uncoverCard.substring(0,2)
+    let uncoverCardFigure = uncoverCard.substring(3, uncoverCard.length)
+
+    if(selectedCardSign==uncoverCardSign || selectedCardFigure==uncoverCardFigure && (sumaText.textContent == 0 || (selectedCardSign == "02" ||
+                                   selectedCardSign == "03" ||
+                                   selectedCardSign == "0J" ||
+                                   selectedCardSign == "0K" ||
+                                   selectedCardSign == "0A"))){
+        return true
+    }
+    else return false
 }
