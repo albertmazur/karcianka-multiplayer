@@ -226,14 +226,14 @@ function moveBot(){
 
 //-------------------Checks if this card can be played----------------
 function checkCard(selectedCard){
-    let coverCard = uncoverMainCardImg.getAttribute("alt")
+    let uncoverCard = uncoverMainCardImg.getAttribute("alt")
 
     let selectedCardSign = selectedCard.substring(0,2)
     let selectedCardFigure = selectedCard.substring(3, selectedCard.length)
-    let coverCardSign = coverCard.substring(0,2)
-    let coverCardFigure = coverCard.substring(3, coverCard.length)
+    let uncoverCardSign = uncoverCard.substring(0,2)
+    let uncoverCardFigure = uncoverCard.substring(3, uncoverCard.length)
 
-    if((selectedCardSign==coverCardSign || selectedCardFigure==coverCardFigure)){
+    if(selectedCardSign==uncoverCardSign || selectedCardFigure==uncoverCardFigure){
         switch(selectedCardSign){
             case "02":
                 suma+=2

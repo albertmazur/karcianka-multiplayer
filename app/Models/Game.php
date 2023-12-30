@@ -44,4 +44,8 @@ class Game extends Model
     public function coverCard(){
         return $this->cards()->where("where", "=", "cover")->orderBy("updated_at")->first();
     }
+
+    public function uncoverCard(){
+        return $this->cards()->where("where", "=", "uncover")->orderBy("updated_at", "DESC")->first();
+    }
 }

@@ -12,10 +12,6 @@ class CardGame extends Model
 
     public $timestamps = false;
 
-    public function friends(): HasMany{
-        return $this->hasMany(Card::class);
-    }
-
     public function card(): HasMany{
         return $this->hasMany(Card::class);
     }

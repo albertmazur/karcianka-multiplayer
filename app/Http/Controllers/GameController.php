@@ -72,30 +72,48 @@ class GameController extends Controller{
         }
 
         if(isset($date["card"])){
+            if($date["userId"] == $game->user_id){
+                $whoNow = $game->user->nick;
+                $game->who_now = $game->user->id;
+                $send = $game->user_id;
+            }
+            if($date["userId"] == $game->send_user_id){
+                $whoNow = $game->userFriend->nick;
+                $game->who_now = $game->userFriend->id;
+                $send = $game->send_user_id;
+            }
+            $game->update();
 
             if($date["card"] == "add"){
                 $card = $game->coverCard();
                 $card->user_id = $date['userId'];
                 $card->where = "user";
                 $card->update();
-                if($date["userId"] == $game->user_id){
-                    $whoNow = $game->user->nick;
-                    $game->who_now = $game->user->id;
-                    $send = $game->user_id;
-                }
-                if($date["userId"] == $game->send_user_id){
-                    $whoNow = $game->userFriend->nick;
-                    $game->who_now = $game->userFriend->id;
-                    $send = $game->send_user_id;
-                }
-                $game->update();
-
-                event(new GameBroadcast($send, ["card" => "add", "whoNow" => $whoNow]));
                 $d = ["card" => $card->cardGame->card, "whoNow" => $whoNow];
+                event(new GameBroadcast($send, ["card" => "add", "whoNow" => $whoNow]));
             }
             else{
-                Log::debug()
+                $card = Card::where("game_id", "=", $game->id)->where("user_id", "=", $date["userId"])->where("card_game_id", "=", CardGame::where("card", "=", $date["card"] )->first()->id)->first();
+                $cardGame = $card->cardGame;
+
+                $uncoverCardGame = $game->uncoverCard()->cardGame;
+                Log::debug($cardGame->card);
+                Log::debug($uncoverCardGame->card);
+
+                $selectedCardSign = substr($cardGame->card, 0, 2);
+                $selectedCardFigure = substr($cardGame->card, 3, strlen($cardGame->card));
+                $uncoverCardSign = substr($uncoverCardGame->card, 0, 2);
+                $uncoverCardFigure = substr($uncoverCardGame->card, 3, strlen($uncoverCardGame->card));
+
+                if($selectedCardSign==$uncoverCardSign || $selectedCardFigure==$uncoverCardFigure){
+                    $card->user_id = null;
+                    $card->where = "uncover";
+                    $card->update();
+                    $d = ["card" => $cardGame->card, "whoNow" => $whoNow];
+                    event(new GameBroadcast($send, $d));
+                }
             }
+
         }
         return response()->json($d);
     }
