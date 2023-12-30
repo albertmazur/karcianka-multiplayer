@@ -14,8 +14,6 @@ if(start != null) startGame()
 
 window.Echo.private('PrivateGameChannel.user.'+id)
     .listen('.private_game', (e) => {
-        console.log("Echo:")
-        console.log(e)
         brodcast(e)
     })
 
@@ -131,8 +129,6 @@ function addCard(){
             return response.json()
         })
         .then(data => {
-            console.log("Dodanie karty: ")
-            console.log(data)
             whoNowText.textContent = data.whoNow
             sumaText.textContent = 0
             data.card.forEach((card)=>{
@@ -173,8 +169,6 @@ function clickForCard(cardImg){
                     return response.json()
             })
             .then(data => {
-                console.log("Wybrana karta: ")
-                console.log(data)
                 if(data.win == undefined){
                     sumaText.textContent = data.sum ? data.sum : 0
                     whoNowText.textContent = data.whoNow

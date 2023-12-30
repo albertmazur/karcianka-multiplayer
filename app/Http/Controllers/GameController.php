@@ -39,10 +39,10 @@ class GameController extends Controller{
 
     public function join(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $game = Game::find($date['id']);
+        $game = $this->gameInvationRepository->get($date['id']);
 
-        if($game == true) return view("game.multiplayer", ["user" => User::find($game->send_user_id), "game_id" => $date['id'], "start" => 1]);
-        else return back()->with(["error" => "Nie można dołaczyć do gry"]);
+        if($game != null) return view("game.multiplayer", ["user" => User::find($game->send_user_id), "game_id" => $date['id'], "start" => 1]);
+        else return redirect()->route("game.start")->with(["error" => "Nie można dołaczyć do gry"]);
     }
 
     public function broadcast(GetDataGame $request){
@@ -74,14 +74,21 @@ class GameController extends Controller{
             $send = $ddd['send'];
 
             if($date["card"] == "add"){
-                $cards = [];
-                for($i = 1; $i < $game->sum; $i++) $cards[] = $game->addCard($date['userId']);
-                $cards[] = $game->addCard($date['userId']);
+                if($game->checkWin()){
+                    $d = ["card" => null, "win" => $game->whoWin()];
+                    $game->delete();
+                }
+                else{
+                    $cards = [];
+                    for($i = 1; $i < $game->sum; $i++) $cards[] = $game->addCard($date['userId']);
+                    $cards[] = $game->addCard($date['userId']);
 
-                $game->sum = 0;
-                $game->update();
+                    $game->sum = 0;
+                    $game->update();
 
-                $d = ["card" => $cards, "whoNow" => $whoNow];
+                    $d = ["card" => $cards, "whoNow" => $whoNow];
+                }
+
                 event(new GameBroadcast($send, ["card" => "add", "count" => count($cards), "whoNow" => $whoNow, "sum" => 0]));
             }
             else{
@@ -104,6 +111,7 @@ class GameController extends Controller{
 
                     if($game->checkWin()){
                         $d = ["card" => $cardGame->card, "win" => $game->whoWin()];
+                        $game->delete();
                     }
 
                     event(new GameBroadcast($send, $d));

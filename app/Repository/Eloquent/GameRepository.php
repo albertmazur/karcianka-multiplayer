@@ -18,12 +18,12 @@ class GameRepository implements Repository{
         $this->friendListModel = $friendList;
     }
 
-    public function listLatestGames(int $idAuth): Collection {
+    public function listLatestGames(int $idAuth):Collection {
         $listLatestGames = $this->gameInvationModel->where("user_id", "=", $idAuth)->orderBy("updated_at", "DESC")->get();
         return $listLatestGames->unique('user_id');
     }
 
-    public function listFriends(int $idAuth): Collection {
+    public function listFriends(int $idAuth):Collection {
         $games = $this->gameInvationModel->where("user_id", "=", $idAuth)->get();
 
         $friendIds = $this->friendListModel
@@ -46,19 +46,27 @@ class GameRepository implements Repository{
         return User::whereIn('id', $friendIds)->get();
     }
 
-    public function add(int $idAuth, int $user): Game{
-        $newGame = new Game();
+    public function add(int $idAuth, int $user):Game{
+        $game1 = $this->gameInvationModel->where('user_id', '=', $idAuth)->where('send_user_id', '=', $user)->first();
+        $game2 = $this->gameInvationModel->where('user_id', '=', $user)->where('send_user_id', '=', $idAuth)->first();
 
-        $newGame->user_id = $user;
-        $newGame->send_user_id = $idAuth;
-        $newGame->who_now = $user;
-        $newGame->sum = 0;
-        $newGame->created_at = Date::now();
-        $newGame->save();
-        return $newGame;
+        if($game1 == null && $game2 == null){
+            $newGame = new Game();
+            $newGame->user_id = $user;
+            $newGame->send_user_id = $idAuth;
+            $newGame->who_now = $user;
+            $newGame->sum = 0;
+            $newGame->created_at = Date::now();
+            $newGame->save();
+            return $newGame;
+        }
+        else{
+            if($game1 != null ) return $game1;
+            if($game2 != null ) return $game2;
+        }
     }
 
-    public function remove(int $idAuth, int $user): User{
+    public function remove(int $idAuth, int $user):User{
         $game = $this->gameInvationModel->where("user_id", '=', $idAuth)->where("send_user_id", '=', $user)->first();
         if($game != null){
             $game->delete();
@@ -67,7 +75,7 @@ class GameRepository implements Repository{
         else return null;
     }
 
-    public function getLast($id): Game|null{
-        return $this->gameInvationModel->orderBy('updated_at','DESC')->first();
+    public function get($id):Game|null{
+        return $this->gameInvationModel->find($id);
     }
 }
