@@ -123,8 +123,9 @@ class Game extends Model
     }
 
     public function checkWin(){
-        if($this->user1()->count() == 0 || $this->user2()->count() == 0 ||
-        ($this->cards()->where("where", "=", "cover")->count() == 1 && $this->cards()->where("where", "=", "uncover")->count() == 0)){
+        $countCover = $this->cards()->where("where", "=", "cover")->count();
+        $uncountCover = $this->cards()->where("where", "=", "uncover")->count();
+        if($this->user1()->count() == 0 || $this->user2()->count() == 0 || (( $countCover== 0 && $uncountCover== 1 || $countCover+($uncountCover-1) < $this->sum))){
             return true;
         }
         return false;
@@ -182,5 +183,10 @@ class Game extends Model
         $game->sum = $sum;
         $game->update();
         return $f;
+    }
+
+    public function finishGame(){
+        $this->cards()->delete();
+        $this->delete();
     }
 }

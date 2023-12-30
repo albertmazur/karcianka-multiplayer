@@ -63,7 +63,7 @@ class GameController extends Controller{
                 $d = $d2;
             }
             else{
-                $game->delete();
+                $game->finishGame();
                 return redirect()->route("game.start")->with(["error" => "Nie udało sie połączyć z tą grą. Spróbuj ponownie"]);
             }
         }
@@ -76,7 +76,7 @@ class GameController extends Controller{
             if($date["card"] == "add"){
                 if($game->checkWin()){
                     $d = ["card" => null, "win" => $game->whoWin()];
-                    $game->delete();
+                    $game->finishGame();
                 }
                 else{
                     $cards = [];
@@ -111,7 +111,7 @@ class GameController extends Controller{
 
                     if($game->checkWin()){
                         $d = ["card" => $cardGame->card, "win" => $game->whoWin()];
-                        $game->delete();
+                        $game->finishGame();
                     }
 
                     event(new GameBroadcast($send, $d));
