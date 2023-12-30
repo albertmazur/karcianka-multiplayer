@@ -14,7 +14,7 @@ export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
         let unCoverCardFigure = unCoverCardAlt.substring(3, unCoverCardAlt.length)
 
         if(cardSign==unCoverCardSign || cardFigure==unCoverCardFigure){
-            if(special_card_check(cardSign))cardsSpecial.unshift(card)
+            if(special_card_check(cardSign)) cardsSpecial.unshift(card)
             else cardsNotSpecial.unshift(card)
         }
     }
