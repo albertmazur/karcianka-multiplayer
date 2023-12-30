@@ -16,8 +16,7 @@ class FriendList extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function userFriend(): BelongsTo
-    {
+    public function userFriend(): BelongsTo{
         return $this->belongsTo(User::class, 'user_friend_id');
     }
 }

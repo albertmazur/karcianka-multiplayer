@@ -2,7 +2,7 @@
 return[
     "friend" => "Znajomy",
     "friends" => "Znajomi",
-    "add" => "Podaj znajomego",
+    "add" => "Podaj nick znajomego",
     "not" => "Nie masz znajomych",
     "remove" => "Usuń z listy znajomych",
     "invitation" => [

@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/scss/app.scss',
                 'resources/js/app.js',
                 'resources/js/game.js',
+                'resources/js/multiplayer.js'
             ],
             refresh: true,
         }),

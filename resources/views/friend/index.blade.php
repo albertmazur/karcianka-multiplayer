@@ -30,7 +30,7 @@
                         @method('PUT')
                         @csrf
                         <x-input-label>{{__("friend.add")}}</x-input-label>
-                        <x-text-input name="name" />
+                        <x-text-input name="nick" />
                         <x-primary-button class="w-20">{{__("Add")}}</x-primary-button>
                     </form>
                 </div>

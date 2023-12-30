@@ -25,13 +25,13 @@ class FriendController extends Controller
 
     public function sendInvitation(Request $request){
         $validated = $request->validate([
-            'name' => 'required',
+            'nick' => 'required',
         ]);
 
-        $user = User::where("name", "=", $validated['name'])->first();
+        $user = User::where("nick", "=", $validated['nick'])->first();
 
             if($user){
-                if($user->name == Auth::user()->name){
+                if($user->nick == Auth::user()->nick){
                     $info = ["error" =>  "Nie możesz podać samego siebie" ];
                 }
                 else{

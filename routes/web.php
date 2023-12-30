@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,12 +28,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
     Route::get('/game/single', [GameController::class, 'single'])->name('game.single');
 
-    Route::get('friend', [FriendController::class, 'index'])->name('friend.index');
-    Route::put('friend', [FriendController::class, 'sendInvitation'])->name('friend.add');
-    Route::delete('friend', [FriendController::class, 'remove'])->name('friend.remove');
+    Route::post('/game/multiplayer', [GameController::class, 'multiplayer'])->name('game.multiplayer');
+    Route::post('/game/join', [GameController::class, 'join'])->name('game.join');
+    Route::post('/game/broadcast', [GameController::class, 'broadcast'])->name('game.broadcast');
 
-    Route::post('friend/accepted', [FriendController::class, 'accepted'])->name('friend.accepted');
-    Route::delete('friend/not-accepted', [FriendController::class, 'notAccepted'])->name('friend.not-accepted');
+    Route::get('/friend', [FriendController::class, 'index'])->name('friend.index');
+    Route::put('/friend', [FriendController::class, 'sendInvitation'])->name('friend.add');
+    Route::delete('/friend', [FriendController::class, 'remove'])->name('friend.remove');
+
+    Route::post('/friend/accepted', [FriendController::class, 'accepted'])->name('friend.accepted');
+    Route::delete('/friend/not-accepted', [FriendController::class, 'notAccepted'])->name('friend.not-accepted');
 });
 
 Route::middleware('auth')->group(function () {

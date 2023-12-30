@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class FriendListRepository implements Repository{
     private FriendList $friendListModel;
 
-    public function __construct(FriendList $friendList)
-    {
+    public function __construct(FriendList $friendList){
         $this->friendListModel = $friendList;
     }
 
@@ -43,7 +42,6 @@ class FriendListRepository implements Repository{
     }
 
     public function myFriends(int $idUser): Collection {
-        // Znajdowanie identyfikatorów przyjaciół
         $friendIds = $this->friendListModel
             ->where('user_id', $idUser)
             ->where('accepted', true)
@@ -53,14 +51,10 @@ class FriendListRepository implements Repository{
                     ->where('user_friend_id', $idUser)
                     ->where('accepted', true)
                     ->pluck('user_id')
-            )
-            ->unique();
+            )->unique();
 
-        // Zwracanie obiektów użytkowników
         return User::whereIn('id', $friendIds)->get();
     }
-
-
 
     public function remove(int $idUser){
         $friend =$this->friendListModel->where("user_id", '=', $idUser)->first();
