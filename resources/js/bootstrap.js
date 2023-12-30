@@ -30,3 +30,10 @@ window.Echo = new Echo({
     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
     enabledTransports: ['ws', 'wss'],
 });
+
+let alertMessage = document.getElementById("messageAlert")
+if(alertMessage){
+    document.getElementById("messageAlertButton").addEventListener("click", ()=>{
+        alertMessage.remove()
+    })
+}

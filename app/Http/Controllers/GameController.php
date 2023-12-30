@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\GameBroadcast;
 use App\Http\Requests\GetDataGame;
-use App\Models\Card;
-use App\Models\CardGame;
 use App\Models\Game;
 use App\Models\User;
 use App\Repository\GameRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -54,7 +51,7 @@ class GameController extends Controller{
         $game = Game::find($date["game"]);
         if(isset($date["start"]) && $date["start"]){
             if($game->cards()->count()==0){
-                $d = $this->startGame($game);
+                $d = $game->startGame();
                 $d1 = $d;
                 $d1["user2"] = count($d["user2"]);
 
@@ -66,35 +63,29 @@ class GameController extends Controller{
                 $d = $d2;
             }
             else{
-                $d = ['messager' =>"Są karty"];
+                $game->delete();
+                return redirect()->route("game.start")->with(["error" => "Nie udało sie połączyć z tą grą. Spróbuj ponownie"]);
             }
         }
 
         if(isset($date["card"])){
-            if($date["userId"] == $game->user_id){
-                $whoNow = $game->user->nick;
-                $game->who_now = $game->user->id;
-                $send = $game->user_id;
-            }
-            if($date["userId"] == $game->send_user_id){
-                $whoNow = $game->userFriend->nick;
-                $game->who_now = $game->userFriend->id;
-                $send = $game->send_user_id;
-            }
-            $game->update();
+            $ddd = $game->changeWhoNow($date["userId"]);
+            $whoNow = $ddd['whoNow'];
+            $send = $ddd['send'];
 
             if($date["card"] == "add"){
                 $cards = [];
-                for($i = 1; $i < $game->sum; $i++){
-                    $cards[] = $this->addCard($game, $date['userId']);
-                }
-                $cards[] = $this->addCard($game, $date['userId']);
+                for($i = 1; $i < $game->sum; $i++) $cards[] = $game->addCard($date['userId']);
+                $cards[] = $game->addCard($date['userId']);
+
+                $game->sum = 0;
+                $game->update();
 
                 $d = ["card" => $cards, "whoNow" => $whoNow];
                 event(new GameBroadcast($send, ["card" => "add", "count" => count($cards), "whoNow" => $whoNow, "sum" => 0]));
             }
             else{
-                $card = Card::where("game_id", "=", $game->id)->where("user_id", "=", $date["userId"])->where("card_game_id", "=", CardGame::where("card", "=", $date["card"] )->first()->id)->first();
+                $card = $game->getCard($date["userId"], $date["card"]);
                 $cardGame = $card->cardGame;
 
                 $uncoverCardGame = $game->uncoverCard()->cardGame;
@@ -104,7 +95,7 @@ class GameController extends Controller{
                 $uncoverCardSign = substr($uncoverCardGame->card, 0, 2);
                 $uncoverCardFigure = substr($uncoverCardGame->card, 3, strlen($uncoverCardGame->card));
 
-                if(($selectedCardSign==$uncoverCardSign || $selectedCardFigure==$uncoverCardFigure) && $this->checkSing($selectedCardSign, $game)){
+                if(($selectedCardSign==$uncoverCardSign || $selectedCardFigure==$uncoverCardFigure) && $game->checkSing($selectedCardSign, $game)){
 
                     $card->user_id = null;
                     $card->where = "uncover";
@@ -118,92 +109,7 @@ class GameController extends Controller{
                     event(new GameBroadcast($send, $d));
                 }
             }
-
         }
         return response()->json($d);
-    }
-
-    private function startGame($game){
-        $cardGame = CardGame::all();
-        $user1 = new Collection();
-        $user2 = new Collection();
-
-        for($i = 0; $i < count($cardGame); $i++){
-            $c = new Card();
-            $c->card_game_id = $cardGame[$i]->id;
-            $c->game_id = $game->id;
-
-            if($i < 10){
-                $c->where = "user";
-
-                if($i%2==0){
-                    $c->user_id = $game->user_id;
-                    $user1->add($c);
-                }
-                if($i%2==1){
-                    $c->user_id = $game->send_user_id;
-                    $user2->add($c);
-                }
-            }
-            else if($i == 11){
-                $c->where = "uncover";
-                $uncoverCard = $c;
-            }
-            else $c->where = "cover";
-
-            $c->save();
-        }
-
-        return[
-            "start" => $game->id,
-            "sum" => $game->sum,
-            "whoNow" => $game->whoNow->nick,
-            "user1" => $game->user1(),
-            "user2" => $game->user2(),
-            "uncover" => $uncoverCard->cardGame->card,
-         ];
-    }
-
-    private function checkSing($sing, $game){
-        $sum = $game->sum;
-        $f = true;
-        switch($sing){
-            case "02":
-                $sum+=2;
-                break;
-            case "03":
-                $sum+=3;
-                break;
-            case "0Q":
-                $sum=0;
-                break;
-            case "0J":
-                if($sum<=5){
-                    $sum=0;
-                }
-                else{
-                    $sum-=5;
-                }
-                break;
-            case "0K":
-                $sum+=5;
-                break;
-            case "0A":
-                break;
-            default:
-                if($sum==0) $f = true;
-                else $f = false;
-        }
-        $game->sum =$sum;
-        $game->update();
-        return $f;
-    }
-
-    private function addCard($game, $userId){
-        $card = $game->coverCard();
-        $card->user_id = $userId;
-        $card->where = "user";
-        $card->update();
-        return $card->cardGame->card;
     }
 }
