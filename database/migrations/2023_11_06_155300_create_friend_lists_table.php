@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignId('user_friend_id');
             $table->boolean('accepted')->nullable();
-            //$table->timestamps();
         });
     }
 
