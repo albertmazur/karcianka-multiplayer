@@ -57,8 +57,7 @@ class FriendListRepository implements Repository{
     }
 
     public function remove(int $idUser){
-        $friend =$this->friendListModel->where("user_id", '=', $idUser)->first();
-        $friend->delete();
+        return $this->friendListModel->where("user_id", '=', $idUser)->orWhere("user_friend_id", '=', $idUser)->delete();
     }
 
     public function get(int $idUser): FriendList{

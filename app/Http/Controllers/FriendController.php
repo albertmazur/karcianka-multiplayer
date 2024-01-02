@@ -51,9 +51,8 @@ class FriendController extends Controller
 
     public function remove(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $friend = $this->friendRepository->get($date["id"]);
-        if ($friend) {
-            $friend->delete();
+        $friendList = $this->friendRepository->remove($date["id"]);
+        if ($friendList) {
             return back()->with('success', 'Usunięto znalomego z listy znajomych');
         }
         return back()->with('error', 'Nie ma kiatego znajomego');
