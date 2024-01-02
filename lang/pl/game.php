@@ -7,5 +7,8 @@ return[
     "history" => "Historia zagrań",
     "show_cards" => "Pokaż katy",
     "watting" => "Czekanie na znajomego",
-    "not_game" => "Nie ma gier"
+    "not_game" => "Nie ma gier",
+    "ruls" => [
+
+    ]
 ];
