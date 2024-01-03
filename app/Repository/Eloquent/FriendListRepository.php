@@ -6,6 +6,7 @@ use App\Models\FriendList;
 use App\Models\User;
 use App\Repository\FriendListRepository as Repository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class FriendListRepository implements Repository{
     private FriendList $friendListModel;
@@ -14,11 +15,20 @@ class FriendListRepository implements Repository{
         $this->friendListModel = $friendList;
     }
 
-    public function sendInvitation(int $idAuth, int $user): bool{
-        $invitation1 = $this->friendListModel->where('user_id', '=', $idAuth)->where('user_friend_id', '=', $user)->first();
-        $invitation2 = $this->friendListModel->where('user_id', '=', $user)->where('user_friend_id', '=', $idAuth)->first();
+    public function sendInvitation(int $user): bool{
+        $idAuth = Auth::id();
+        $invitation = $this->friendListModel
+        ->where(function($query) use ($idAuth, $user) {
+            $query->where('user_id', '=', $idAuth)
+                  ->where('user_friend_id', '=', $user);
+        })
+        ->orWhere(function($query) use ($idAuth, $user) {
+            $query->where('user_id', '=', $user)
+                  ->where('user_friend_id', '=', $idAuth);
+        })
+        ->first();
 
-        if($invitation1 == null && $invitation2 == null){
+        if($invitation == null){
             $newFriend = new FriendList();
 
             $newFriend->user_id = $user;
@@ -30,15 +40,25 @@ class FriendListRepository implements Repository{
         return false;
     }
 
-    public function acceptedInvitation(int $idMyFriend): void{
-        $user = $this->friendListModel->where('user_friend_id', '=', $idMyFriend)->first();
-        $user->accepted = true;
-        $user->save();
+    public function acceptedInvitation(int $idMyFriend): bool{
+        $friend = $this->getOne($idMyFriend);
+
+        if($friend != null ){
+            $friend->accepted = true;
+            $friend->save();
+            return true;
+        }
+        return false;
     }
 
-    public function notAcceptedInvitation(int $idMyFriend): void{
-        $user = $this->friendListModel->where('user_friend_id', '=', $idMyFriend)->first();
-        $user->delete();
+    public function notAcceptedInvitation(int $idMyFriend): bool{
+        $friend = $this->getOne($idMyFriend);
+
+        if($friend != null ){
+            $friend->delete();
+            return true;
+        }
+        return false;
     }
 
     public function myFriends(int $idUser): Collection {
@@ -65,6 +85,20 @@ class FriendListRepository implements Repository{
     }
 
     public function listInvitation(int $idAuth): Collection{
-        return $this->friendListModel->where("user_id", "=", $idAuth)->where('accepted', '<>', true)->get();
+        return $this->friendListModel->where("user_id", "=", $idAuth)->where('accepted', '=', false)->get();
+    }
+
+    private function getOne($idMyFriend): FriendList{
+        $idAuth = Auth::id();
+        return $this->friendListModel
+        ->where(function($query) use ($idAuth, $idMyFriend) {
+            $query->where('user_id', '=', $idAuth)
+                  ->where('user_friend_id', '=', $idMyFriend);
+        })
+        ->orWhere(function($query) use ($idAuth, $idMyFriend) {
+            $query->where('user_id', '=', $idMyFriend)
+                  ->where('user_friend_id', '=', $idAuth);
+        })
+        ->first();
     }
 }

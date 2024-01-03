@@ -31,21 +31,14 @@ class FriendController extends Controller
         $user = User::where("nick", "=", $validated['nick'])->first();
 
             if($user){
-                if($user->nick == Auth::user()->nick){
-                    $info = ["error" =>  "Nie możesz podać samego siebie" ];
-                }
+                if($user->nick == Auth::user()->nick) $info = ["error" =>  "Nie możesz podać samego siebie" ];
                 else{
-                    if($this->friendRepository->sendInvitation(Auth::id(), $user->id)){
-                        $info = ["success" =>  "Wysłano zaproszenie" ];
-                    }
-                    else{
-                        $info = ["error" =>  "Jesteście znajomimi lub zaproszenie było już wysłane" ];
-                    }
+                    if($this->friendRepository->sendInvitation($user->id)) $info = ["success" =>  "Wysłano zaproszenie" ];
+                    else $info = ["error" =>  "Jesteście znajomimi lub zaproszenie było już wysłane" ];
                 }
             }
-            else{
-                $info = ["error" =>  "Nie ma takiego użytkownika" ];
-            }
+            else $info = ["error" =>  "Nie ma takiego użytkownika" ];
+
         return back()->with($info);
     }
 
@@ -61,13 +54,15 @@ class FriendController extends Controller
 
     public function accepted(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $this->friendRepository->acceptedInvitation($date["id"]);
-        return back()->with(["success" => "Dodano do znajomych"]);
+        $f = $this->friendRepository->acceptedInvitation($date["id"]);
+        if($f) return back()->with(["success" => "Dodano do znajomych"]);
+        else return back()->with(["error" => "Nie udało dodać do znajomych"]);
     }
 
     public function notAccepted(Request $request){
         $date = $request->validate(["id" => ["required", "integer"]]);
-        $this->friendRepository->notAcceptedInvitation($date["id"]);
-        return back()->with(["success" => "Udało się usuanąć zaproszenie"]);
+        $f = $this->friendRepository->notAcceptedInvitation($date["id"]);
+        if($f) return back()->with(["success" => "Udało się usuanąć zaproszenie"]);
+        else return back()->with(["error" => "Nie udało sie usunąć zaproszenia"]);
     }
 }
