@@ -16,7 +16,7 @@
                   </label>
             </div>
             <div class="bot bot1">
-                <p>Bot 1</p>
+                <p>Bot</p>
                 <div id="cardsBot1" ></div>
             </div>
             <div class="center">
