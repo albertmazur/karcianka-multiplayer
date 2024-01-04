@@ -5,13 +5,14 @@ export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
     let cardsNotSpecial = []
 
     let unCoverCardAlt = uncoverMainCardImg.getAttribute("alt")
+    let unCoverCardSign = unCoverCardAlt.substring(0,2)
+    let unCoverCardFigure = unCoverCardAlt.substring(3, unCoverCardAlt.length)
+
     for(let card of cards){
         let cardAlt = card.getAttribute("alt")
 
         let cardSign = cardAlt.substring(0,2)
         let cardFigure = cardAlt.substring(3, cardAlt.length)
-        let unCoverCardSign = unCoverCardAlt.substring(0,2)
-        let unCoverCardFigure = unCoverCardAlt.substring(3, unCoverCardAlt.length)
 
         if(cardSign==unCoverCardSign || cardFigure==unCoverCardFigure){
             if(special_card_check(cardSign)) cardsSpecial.unshift(card)
