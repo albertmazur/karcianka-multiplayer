@@ -204,6 +204,9 @@ function moveBot(){
 
        if(mode == "Heuristic") playedCard = heuristic(cards, uncoverMainCardImg, youCards.length, suma)
        if(mode == "MCTS"){
+           let cardBotAlt = []
+           for (let card of cards) cardBotAlt.unshift(card.alt)
+
            let youCardsdAlt = []
            for (let card of youCards.children) youCardsdAlt.unshift(card.alt)
 
@@ -212,7 +215,7 @@ function moveBot(){
            losCards = shuffleCards(losCards)
            youCardsdAlt = losCards.splice(0, youCardslenght)
 
-           playedCard = mcts(cards, youCardsdAlt, losCards, uncoverMainCards, PLAYERS, suma)
+           playedCard = mcts(cardBotAlt, youCardsdAlt, losCards, uncoverMainCards, PLAYERS, suma)
        }
 
        if(playedCard != null){
