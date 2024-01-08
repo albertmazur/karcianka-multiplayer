@@ -162,8 +162,8 @@ function drawCard(who){
 function checkCoverCards(){
     if(coverMainCards.length==0){
         let c = uncoverMainCards.shift()
-        coverMainCards = shuffleCards(newUncoverCards)
-        uncoverMainCards.splice(0, newUncoverCards.length)
+        coverMainCards = shuffleCards(uncoverMainCards)
+        uncoverMainCards.splice(0, uncoverMainCards.length)
         uncoverMainCards.unshift(c)
     }
 }
@@ -215,7 +215,8 @@ function moveBot(){
            losCards = shuffleCards(losCards)
            youCardsdAlt = losCards.splice(0, youCardslenght)
 
-           playedCard = mcts(cardBotAlt, youCardsdAlt, losCards, uncoverMainCards, PLAYERS, suma)
+           let card = mcts(cardBotAlt, youCardsdAlt, losCards, uncoverMainCards, PLAYERS, suma)
+           playedCard = document.querySelector(`img[alt="${card}"]`)
        }
 
        if(playedCard != null){

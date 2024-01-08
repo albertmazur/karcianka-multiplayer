@@ -6,7 +6,7 @@ export function mcts(botCards, youCards, coverMainCards, uncoverMainCards, PLAYE
     let bestMove = runMCTS(initialState, mctsIteration)
 
     if(bestMove == "add") return null
-    else return document.querySelector(`img[alt="${bestMove}"]`)
+    else return bestMove
 }
 
 function runMCTS(rootState, iterations) {
@@ -62,38 +62,37 @@ class GameState {
     // Generate possible moves based on the game rules
     getPossibleMoves() {
         let possibleCard = []
-        if(this.suma<=this.coverCards.length && this.coverCards.length !=0 ){
-            let unCard = this.uncoverCards.at(0)
-            let uncoverCardSign = unCard.substring(0, 2)
-            let uncoverCardFigure = unCard.substring(3, unCard.length)
-            if(this.player == PLAYERS.BOT){
-                this.botCards.forEach(card => {
-                    let cardSign = card.substring(0,2)
-                    let cardFigure = card.substring(3, card.length)
 
-                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
-                        if(this.suma == 0) possibleCard.unshift(card)
+        let unCard = this.uncoverCards.at(0)
+        let uncoverCardSign = unCard.substring(0, 2)
+        let uncoverCardFigure = unCard.substring(3, unCard.length)
+        if(this.player == PLAYERS.BOT){
+            this.botCards.forEach(card => {
+                let cardSign = card.substring(0,2)
+                let cardFigure = card.substring(3, card.length)
+
+                if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                    if(this.suma == 0) possibleCard.unshift(card)
                 else if(special_card_check(cardSign)) possibleCard.unshift(card)
-            }
-        })
-            }
-            if(this.player == PLAYERS.HUMAN){
-                this.humanCards.forEach(card => {
-                    let cardSign = card.substring(0,2)
-                    let cardFigure = card.substring(3, card.length)
+                }
+            })
+        }
+        if(this.player == PLAYERS.HUMAN){
+            this.humanCards.forEach(card => {
+                let cardSign = card.substring(0,2)
+                let cardFigure = card.substring(3, card.length)
 
-                    if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
-                        if(this.suma == 0) possibleCard.unshift(card)
-                        else if(special_card_check(cardSign)) possibleCard.unshift(card)
-                    }
-                })
-            }
+                if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
+                    if(this.suma == 0) possibleCard.unshift(card)
+                    else if(special_card_check(cardSign)) possibleCard.unshift(card)
+                }
+            })
+        }
 
-
-            if(this.coverCards.length>0){
+            if(this.suma<=this.coverCards.length && this.coverCards.length > 0 ){
                 possibleCard.push("add")
             }
-        }
+
         return possibleCard
     }
 
