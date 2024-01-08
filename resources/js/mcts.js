@@ -1,7 +1,7 @@
 import {shuffleCards, special_card_check, PLAYERS} from './helper.js'
 
-export function mcts(botCards, youCards, coverMainCards, uncoverMainCards, PLAYERS, suma) {
-    let initialState = new GameState(botCards, youCards, coverMainCards, uncoverMainCards, PLAYERS.BOT, suma)
+export function mcts(botCards, youCards, coverMainCards, uncoverMainCards, PLAYERS, sum) {
+    let initialState = new GameState(botCards, youCards, coverMainCards, uncoverMainCards, PLAYERS.BOT, sum)
     let mctsIteration = document.getElementById("mctsIteration").value
     let bestMove = runMCTS(initialState, mctsIteration)
 
