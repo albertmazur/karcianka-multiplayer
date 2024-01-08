@@ -73,7 +73,7 @@ class GameState {
 
                 if(cardSign==uncoverCardSign || cardFigure==uncoverCardFigure){
                     if(this.suma == 0) possibleCard.unshift(card)
-                else if(special_card_check(cardSign)) possibleCard.unshift(card)
+                    else if(special_card_check(cardSign)) possibleCard.unshift(card)
                 }
             })
         }
@@ -191,8 +191,8 @@ class MCTSNode {
         let bestValue = -Infinity
         this.children.forEach(child => {
             let uctValue =
-                child.wins / child.visits +
-                Math.sqrt(2) * Math.sqrt(Math.log(this.visits) / child.visits)
+                (child.wins / child.visits) +
+                (Math.sqrt(2) * Math.sqrt(Math.log(this.visits) / child.visits))
             if (uctValue > bestValue) {
                 selectedChild = child
                 bestValue = uctValue
