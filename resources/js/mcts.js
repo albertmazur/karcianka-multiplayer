@@ -89,7 +89,7 @@ class GameState {
             })
         }
 
-            if(this.suma<=this.coverCards.length && this.coverCards.length > 0 ){
+            if((this.suma<=this.coverCards.length && this.coverCards.length > 0) && possibleCard.length == 0 ){
                 possibleCard.push("add")
             }
 
@@ -182,7 +182,7 @@ class MCTSNode {
         this.state = state
         this.children = []
         this.wins = 0
-        this.visits = 0
+        this.visits = 1
     }
 
     // Select a child node using the UCT (Upper Confidence Bound applied to Trees) formula
