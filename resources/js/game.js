@@ -1,5 +1,5 @@
 import { mcts } from './mcts.js'
-import { heuristic } from './heuristic.js'
+import { established_rules } from './established_rules.js'
 import {shuffleCards, MAINCARDS, PLAYERS} from './helper.js'
 
 //-----------------Card names--------------------------------
@@ -202,7 +202,7 @@ function moveBot(){
        let playedCard
        let isCard = false
 
-       if(mode == "Heuristic") playedCard = heuristic(cards, uncoverMainCardImg, youCards.length, suma)
+       if(mode == "EstablishedRules") playedCard = established_rules(cards, uncoverMainCardImg, youCards.length, suma)
        if(mode == "MCTS"){
            let cardBotAlt = []
            for (let card of cards) cardBotAlt.unshift(card.alt)

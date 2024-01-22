@@ -1,6 +1,6 @@
 import {special_card_check} from './helper.js'
 
-export function heuristic(cards, uncoverMainCardImg, youCardsCount, suma){
+export function established_rules(cards, uncoverMainCardImg, youCardsCount, suma){
     let cardsSpecial = []
     let cardsNotSpecial = []
 

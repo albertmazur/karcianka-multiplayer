@@ -8,6 +8,7 @@ return[
     "show_cards" => "Pokaż katy",
     "watting" => "Czekanie na znajomego",
     "not_game" => "Nie ma gier",
+    "established_rules" => "Oparty na zasadach",
     "rul" => "Zasady gry",
     "ruls" => [
         "1" => "podczas rozgrywki wykładać można 1 kartę. Karty na środek dokłada się według zasady koloru i figury. Jeśli więc na stole leży 5 kier, gracz może położyć dowolną 5 lub dowolnego kiera. Wyjątkiem są karty funkcyjne, które wymuszają wyłożenie na stół konkretnych figur.",
