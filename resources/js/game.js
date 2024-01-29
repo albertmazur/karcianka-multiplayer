@@ -223,7 +223,6 @@ function moveBot(){
            checkCard(playedCard.getAttribute("alt"))
            isCard=true
        }
-       console.log(playedCard)
        changeCard(isCard, playedCard)
     }
 }

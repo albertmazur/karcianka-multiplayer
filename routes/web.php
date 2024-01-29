@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/game', [GameController::class, 'start'])->name('game.start');
     Route::get('/game/single', [GameController::class, 'single'])->name('game.single');
+    Route::get('/game/error', [GameController::class, 'error'])->name('game.error');
 
     Route::post('/game/multiplayer', [GameController::class, 'multiplayer'])->name('game.multiplayer');
     Route::post('/game/join', [GameController::class, 'join'])->name('game.join');

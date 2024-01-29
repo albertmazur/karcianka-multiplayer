@@ -26,6 +26,13 @@ class GameController extends Controller{
         ]);
     }
 
+    public function error(): View{
+        return view("game.index", [
+            "friends" => $this->gameInvationRepository->listFriends(Auth::id()),
+            "games" => $this->gameInvationRepository->listLatestGames(Auth::id())
+        ])->with(["error" => "Nie udało się dołączyć do gry"]);
+    }
+
     public function single(): View{
         return view('game.single');
     }
