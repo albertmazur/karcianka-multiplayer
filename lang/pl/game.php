@@ -2,6 +2,8 @@
 return[
     "game" => "Gra",
     "play" => "Zagraj",
+    "list" => "Lista zaproszeń do gry od znajomych",
+    "invitation" => "Zaproś do gry",
     "single" => "Gra sam",
     "join" => "Dołącz",
     "history" => "Historia zagrań",

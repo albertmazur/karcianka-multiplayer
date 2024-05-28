@@ -1,6 +1,7 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-5">
+            <h4 class="font-bold text-2xl mx-3 mb-3">{{__('game.list')}}</h4>
             <div class="bg-white  m-3 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex justify-center p-6 text-gray-900">
                     @if ($games->count()>=1)
@@ -24,8 +25,8 @@
                 </div>
             </div>
 
-
-            <div class="bg-white  m-3 overflow-hidden shadow-sm sm:rounded-lg">
+            <h4 class="font-bold text-2xl m-3 mt-5">{{__('game.invitation')}}</h4>
+            <div class="bg-white m-3 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex justify-center p-6 text-gray-900">
                     @if ($friends->count()>=1)
                         <ul class="mt-3 flex flex-col w-full">
