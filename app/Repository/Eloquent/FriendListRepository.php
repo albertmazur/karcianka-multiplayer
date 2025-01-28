@@ -77,7 +77,16 @@ class FriendListRepository implements Repository{
     }
 
     public function remove(int $idUser){
-        return $this->friendListModel->where("user_id", '=', $idUser)->orWhere("user_friend_id", '=', $idUser)->delete();
+        return $this->friendListModel
+            ->where(function ($query) use ($idUser) {
+                $query->where('user_id', '=', $idUser)
+                    ->where('user_friend_id', '=', Auth::id());
+            })
+            ->orWhere(function ($query) use ($idUser) {
+                $query->where('user_id', '=', Auth::id())
+                    ->where('user_friend_id', '=', $idUser);
+            })
+            ->delete();
     }
 
     public function get(int $idUser): FriendList{
