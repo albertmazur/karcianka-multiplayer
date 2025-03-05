@@ -22,10 +22,17 @@ jobs:
 
     - name: Deploy to Server
       run: |
-        echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+        chmod 600 private_key
+
+        # Wysyłanie plików na serwer
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i private_key" \
+        --exclude '.env' --exclude 'storage/' --exclude 'vendor/' --exclude 'node_modules/' \
+        ./ $SSH_USER@$SSH_HOST:$APP_DIR
+
+        # Uruchomienie komend po wdrożeniu
         ssh -o StrictHostKeyChecking=no -i private_key $SSH_USER@$SSH_HOST << 'EOF'
           cd $APP_DIR
-          git pull origin $BRANCH
           composer install --no-dev --optimize-autoloader
           php artisan migrate --force
           php artisan cache:clear
@@ -33,4 +40,6 @@ jobs:
           php artisan route:clear
           php artisan view:clear
           php artisan config:cache
+          php artisan queue:restart
+          sudo systemctl restart nginx
         EOF
