@@ -3,9 +3,6 @@ on:
   push:
     branches:
       - main
-env:
-  APP_DIR: /domains/karcianka.albertmazur.pl/public_html/
-  BRANCH: main
 
 jobs:
   deploy:
@@ -14,17 +11,24 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup SSH
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-
     - name: Deploy to Server
       env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_USER: ${{ secrets.USER }}
         SSH_HOST: ${{ secrets.HOST }}
+        APP_DIR: /domains/karcianka.albertmazur.pl/public_html/
       run: |
+        # Utworzenie katalogu SSH
+        mkdir -p ~/.ssh
+        
+        # Zapis klucza prywatnego
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        
+        # Dodanie klucza do known_hosts
+        ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+        
+        # Synchronizacja plików
         rsync -avz --delete \
         -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
         --exclude '.env' \
@@ -33,12 +37,8 @@ jobs:
         --exclude 'node_modules/' \
         --exclude '.git/' \
         ./ $SSH_USER@$SSH_HOST:$APP_DIR
-
-    - name: Execute Remote Commands
-      env:
-        SSH_USER: ${{ secrets.USER }}
-        SSH_HOST: ${{ secrets.HOST }}
-      run: |
+        
+        # Wykonanie zdalnych poleceń
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
           cd /domains/karcianka.albertmazur.pl/public_html/
           composer install --no-dev --optimize-autoloader
@@ -48,4 +48,6 @@ jobs:
           php artisan route:clear
           php artisan view:clear
           php artisan config:cache
+          php artisan queue:restart
+          sudo systemctl restart nginx
         EOF
