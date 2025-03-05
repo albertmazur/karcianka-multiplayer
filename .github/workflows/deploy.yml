@@ -1,0 +1,38 @@
+name: Deploy Laravel App
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_DIR: /var/www/your-laravel-app
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  SSH_USER: ${{ secrets.USER }}
+  SSH_HOST: ${{ secrets.HOST }}
+  BRANCH: "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Deploy to Server
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key $SSH_USER@$SSH_HOST << 'EOF'
+          cd $APP_DIR
+          git pull origin $BRANCH
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+          php artisan cache:clear
+          php artisan config:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan config:cache
+          php artisan queue:restart
+          sudo systemctl restart nginx
+        EOF
