@@ -1,36 +1,47 @@
 name: Deploy Laravel App
-
 on:
   push:
     branches:
       - main
-
 env:
   APP_DIR: /domains/karcianka.albertmazur.pl/public_html/
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SSH_USER: ${{ secrets.USER }}
-  SSH_HOST: ${{ secrets.HOST }}
-  BRANCH: "main"
+  BRANCH: main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Deploy to Server
+    - name: Setup SSH
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
-        chmod 600 private_key
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i private_key" \
-        --exclude '.env' --exclude 'storage/' --exclude 'vendor/' --exclude 'node_modules/' \
+    - name: Deploy to Server
+      env:
+        SSH_USER: ${{ secrets.USER }}
+        SSH_HOST: ${{ secrets.HOST }}
+      run: |
+        rsync -avz --delete \
+        -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+        --exclude '.env' \
+        --exclude 'storage/' \
+        --exclude 'vendor/' \
+        --exclude 'node_modules/' \
+        --exclude '.git/' \
         ./ $SSH_USER@$SSH_HOST:$APP_DIR
 
-        ssh -o StrictHostKeyChecking=no -i private_key $SSH_USER@$SSH_HOST << 'EOF'
-          cd $APP_DIR
+    - name: Execute Remote Commands
+      env:
+        SSH_USER: ${{ secrets.USER }}
+        SSH_HOST: ${{ secrets.HOST }}
+      run: |
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+          cd /domains/karcianka.albertmazur.pl/public_html/
           composer install --no-dev --optimize-autoloader
           php artisan migrate --force
           php artisan cache:clear
