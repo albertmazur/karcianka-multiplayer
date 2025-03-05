@@ -1,4 +1,4 @@
-name: Deploy Laravel App
+name: Deploy Laravel Application to Production Server
 on:
   push:
     branches:
@@ -7,47 +7,46 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
 
-    - name: Deploy to Server
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+
+    - name: Install Composer Dependencies
+      run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
+
+    - name: Install Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+
+    - name: Install NPM Dependencies
+      run: npm install
+
+    - name: Build NPM Assets
+      run: npm run build
+
+    - name: Synchronize Files To Server
+      uses: easingthemes/ssh-deploy@v2.1.5
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_USER: ${{ secrets.USER }}
-        SSH_HOST: ${{ secrets.HOST }}
-        APP_DIR: /domains/karcianka.albertmazur.pl/public_html/
-      run: |
-        # Utworzenie katalogu SSH
-        mkdir -p ~/.ssh
-        
-        # Zapis klucza prywatnego
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        
-        # Dodanie klucza do known_hosts
-        ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-        
-        # Synchronizacja plików
-        rsync -avz --delete \
-        -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-        --exclude '.env' \
-        --exclude 'storage/' \
-        --exclude 'vendor/' \
-        --exclude 'node_modules/' \
-        --exclude '.git/' \
-        ./ $SSH_USER@$SSH_HOST:$APP_DIR
-        
-        # Wykonanie zdalnych poleceń
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+        SOURCE: "."
+        REMOTE_HOST: ${{ secrets.HOST }}
+        REMOTE_USER: ${{ secrets.USER }}
+        TARGET: "/domains/karcianka.albertmazur.pl/public_html/"
+
+    - name: Run Remote/Artisan Commands
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
           cd /domains/karcianka.albertmazur.pl/public_html/
-          composer install --no-dev --optimize-autoloader
           php artisan migrate --force
-          php artisan cache:clear
-          php artisan config:clear
-          php artisan route:clear
-          php artisan view:clear
-          php artisan config:cache
-          php artisan queue:restart
-          sudo systemctl restart nginx
-        EOF
+          php artisan optimize
