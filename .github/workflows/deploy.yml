@@ -40,6 +40,4 @@ jobs:
           php artisan route:clear
           php artisan view:clear
           php artisan config:cache
-          php artisan queue:restart
-          sudo systemctl restart nginx
         EOF
