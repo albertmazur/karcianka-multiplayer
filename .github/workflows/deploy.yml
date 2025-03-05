@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -21,7 +21,7 @@ jobs:
       run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
 
     - name: Install Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '22'
 
@@ -32,7 +32,7 @@ jobs:
       run: npm run build
 
     - name: Synchronize Files To Server
-      uses: easingthemes/ssh-deploy@v2.1.5
+      uses: easingthemes/ssh-deploy@main
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SOURCE: "."
@@ -41,7 +41,7 @@ jobs:
         TARGET: "/domains/karcianka.albertmazur.pl/public_html"
 
     - name: Run Remote/Artisan Commands
-      uses: appleboy/ssh-action@v0.1.6
+      uses: appleboy/ssh-action@v1.2.1
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
