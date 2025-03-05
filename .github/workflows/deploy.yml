@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  APP_DIR: /var/www/your-laravel-app
+  APP_DIR: /domains/karcianka.albertmazur.pl/public_html/
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   SSH_USER: ${{ secrets.USER }}
   SSH_HOST: ${{ secrets.HOST }}
