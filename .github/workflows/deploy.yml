@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  APP_DIR: "/home/amazurpriv/domains/karcianka.albertmazur.pl/public_html"
+  APP_DIR: "/domains/karcianka.albertmazur.pl/public_html"
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   SSH_USER: ${{ secrets.USER }}
   SSH_HOST: ${{ secrets.HOST }}
@@ -23,9 +23,9 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY" > private_key
         chmod 600 private_key
-        mkdir -p ~/.ssh
-        echo "Host *" > ~/.ssh/config
-        echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+        mkdir -p .ssh
+        echo "Host *" > .ssh/config
+        echo "  StrictHostKeyChecking no" >> .ssh/config
 
     - name: Deploy Laravel
       run: |
