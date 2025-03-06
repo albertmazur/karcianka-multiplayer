@@ -19,14 +19,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up SSH Key
-      run: |
-        echo "$SSH_PRIVATE_KEY" > private_key
-        chmod 600 private_key
-        mkdir -p .ssh
-        echo "Host *" > .ssh/config
-        echo "  StrictHostKeyChecking no" >> .ssh/config
-
     - name: Deploy Laravel
       run: |
         rsync -avz --delete -e "ssh -i private_key" ./ $SSH_USER@$SSH_HOST:$APP_DIR
