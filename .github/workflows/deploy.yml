@@ -19,7 +19,7 @@ jobs:
 
     - name: Deploy Laravel
       run: |
-        cd /home/amazurpriv/domains/karcianka.albertmazur.pl/public_html/
+        cd $PATH
         git pull https://$GITHUB_PAT@github.com/albertmazur/karcianka-multiplayer.git main
         composer install --no-dev --optimize-autoloader
         npm install
