@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB }}
+
 jobs:
   deploy:
     runs-on: self-hosted
@@ -16,11 +19,9 @@ jobs:
     - name: Deploy Laravel
       run: |
         ls -al
-        cd /home/amazurpriv/domains/karcianka.albertmazur.pl/public_html
-        git pull origin main
+        cd /home/amazurpriv/domains/karcianka.albertmazur.pl/public_html/
+        git pull https://$GITHUB_PAT@github.com/albertmazur/karcianka-multiplayer.git main
         composer install --no-dev --optimize-autoloader
         php artisan migrate --force
         php artisan cache:clear
         php artisan config:cache
-        php artisan queue:restart
-        sudo systemctl restart nginx
