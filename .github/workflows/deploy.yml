@@ -1,59 +1,25 @@
 name: Deploy Laravel App
+
 on:
   push:
     branches:
       - main
-env:
-  APP_DIR: "/domains/karcianka.albertmazur.pl/public_html"
-  SSH_USER: "amazurpriv"
-  SSH_HOST: ${{ secrets.HOST }}
+
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      
-    - name: Setup SSH
-      run: |
-        # Upewnij się, że katalog .ssh istnieje
-        mkdir -p ~/.ssh
-        
-        # Zapisz klucz do pliku tymczasowego (NIE do ~/.ssh/config)
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/deploy_key
-        chmod 600 ~/deploy_key
-        
-        # Dodaj host do known_hosts
-        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
-        
+
     - name: Deploy Laravel
       run: |
-        # Użyj innej ścieżki dla klucza i dodaj więcej parametrów SSH
-        rsync -avz --delete -e "ssh -i ~/deploy_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts" \
-          --exclude '.git/' \
-          --exclude '.github/' \
-          --exclude '.env' \
-          --exclude 'node_modules/' \
-          --exclude 'storage/app/*' \
-          --exclude 'storage/logs/*' \
-          --exclude 'storage/framework/cache/*' \
-          --exclude 'vendor/' \
-          ./ $SSH_USER@$SSH_HOST:$APP_DIR
-          
-        # Wykonaj komendy na serwerze
-        ssh -i ~/deploy_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF
-          cd $APP_DIR
-          composer install --no-dev --optimize-autoloader
-          php artisan migrate --force
-          php artisan cache:clear
-          php artisan config:clear
-          php artisan route:clear
-          php artisan view:clear
-          php artisan config:cache
-          php artisan queue:restart
-          sudo systemctl restart nginx
-        EOF
-        
-    - name: Clean up
-      run: rm -f ~/deploy_key
+        cd /domains/karcianka.albertmazur.pl/public_html
+        git pull origin main
+        composer install --no-dev --optimize-autoloader
+        php artisan migrate --force
+        php artisan cache:clear
+        php artisan config:cache
+        php artisan queue:restart
+        sudo systemctl restart nginx
