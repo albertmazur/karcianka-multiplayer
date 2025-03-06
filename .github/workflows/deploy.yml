@@ -21,6 +21,8 @@ jobs:
       run: |
         cd $DEPLOY_PATH
         git pull https://$GITHUB_PAT@github.com/albertmazur/karcianka-multiplayer.git main
+        npm install
+        npm run build
         composer install --no-dev --optimize-autoloader
         php artisan migrate --force
         php artisan cache:clear
