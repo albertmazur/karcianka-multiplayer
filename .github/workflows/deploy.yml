@@ -1,27 +1,27 @@
 name: Deploy Laravel App
-
 on:
   push:
     branches:
       - main
-
 env:
   APP_DIR: "/domains/karcianka.albertmazur.pl/public_html"
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   SSH_USER: ${{ secrets.USER }}
   SSH_HOST: ${{ secrets.HOST }}
-
 jobs:
   deploy:
     runs-on: self-hosted
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > private_key
+        chmod 600 private_key
     - name: Deploy Laravel
       run: |
-        rsync -avz --delete -e "ssh $SSH_USER@$SSH_HOST:$APP_DIR
+        rsync -avz --delete -e "ssh -i private_key" ./ $SSH_USER@$SSH_HOST:$APP_DIR
         ssh -i private_key $SSH_USER@$SSH_HOST << EOF
           cd $APP_DIR
           composer install --no-dev --optimize-autoloader
@@ -31,3 +31,5 @@ jobs:
           php artisan queue:restart
           sudo systemctl restart nginx
         EOF
+    - name: Clean up
+      run: rm -f private_key
