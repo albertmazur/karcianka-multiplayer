@@ -16,7 +16,7 @@ jobs:
     - name: Deploy Laravel
       run: |
         ls -al
-        cd /domains/karcianka.albertmazur.pl/public_html
+        cd /home/amazurpriv/domains/karcianka.albertmazur.pl/public_html
         git pull origin main
         composer install --no-dev --optimize-autoloader
         php artisan migrate --force
