@@ -6,8 +6,7 @@ on:
       - main
 
 env:
-  GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
-  DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+  GITHUB_PAT: ${{ secrets.GITHUB }}
 
 jobs:
   deploy:
@@ -19,7 +18,8 @@ jobs:
 
     - name: Deploy Laravel
       run: |
-        cd $DEPLOY_PATH
+        ls -al
+        cd /home/amazurpriv/domains/karcianka.albertmazur.pl/public_html/
         git pull https://$GITHUB_PAT@github.com/albertmazur/karcianka-multiplayer.git main
         composer install --no-dev --optimize-autoloader
         php artisan migrate --force
