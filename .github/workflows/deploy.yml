@@ -6,7 +6,7 @@ on:
 env:
   APP_DIR: "/domains/karcianka.albertmazur.pl/public_html"
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SSH_USER: ${{ secrets.USER }}
+  SSH_USER: "amazurpriv"
   SSH_HOST: ${{ secrets.HOST }}
 jobs:
   deploy:
